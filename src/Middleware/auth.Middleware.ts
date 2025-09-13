@@ -16,7 +16,9 @@ export class AuthMiddleware {
             const token = authHeader && authHeader.split(' ')[1];
 
             if (!token) {
-                return res.status(401)
+                return res.status(401).json({
+                    message: "Unauthorized access!"
+                })
             };
 
             jwt.verify(token, authValidator.ADMIN_SECRET_KEY, async (err, decodedToken: any) => {

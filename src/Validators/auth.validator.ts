@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { Admin } from "../Classes/admin.Class";
 import bcrypt from "bcryptjs";
-import { adminModel } from "../Models/admin.model";
+import { adminModel } from "../Models/admin.Model";
 import { IError } from "../Classes/error.class";
 dotenv.config();
 

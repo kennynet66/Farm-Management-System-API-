@@ -1,4 +1,4 @@
-import { adminModel } from "../Models/admin.model";
+import { adminModel } from "../Models/admin.Model";
 import { IResponseAdmin, IAdmin } from "../Types/admin.Types";
 import { IResponse } from "../Types/global.Types";
 import { IError } from "./error.class";

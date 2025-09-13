@@ -11,10 +11,10 @@ export class AdminRoutes {
         this.router = Router();
         this.controller = new AdminController();
         this.middleware = new AuthMiddleware();
-        this.initializeRoutes();
+        this.initializeAdminRoutes();
     }
 
-    private initializeRoutes() {
+    private initializeAdminRoutes() {
         this.router.post("/createadmin", this.controller.createAdmin);
         this.router.get("/fetchadmin", this.controller.fetchAdmin);
         this.router.get("/fetchadmin/:id", this.middleware.requireAdmin, this.controller.fetchAdminById);

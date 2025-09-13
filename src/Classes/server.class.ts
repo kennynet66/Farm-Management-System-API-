@@ -4,6 +4,9 @@ import mongoose, { MongooseError } from "mongoose";
 import { Environments } from "../Types/global.Types";
 import { AdminRoutes } from "../Routes/admin.Routes";
 import { AuthRoutes } from "../Routes/auth.Routes";
+import { CropRoutes } from "../Routes/crop.Routes";
+import { inventoryRoutes } from "../Routes/inventory.Route";
+import cors from "cors"
 
 dotenv.config();
 
@@ -16,6 +19,8 @@ export class Server {
     private port: string = process.env.PORT || "";
     private adminRoutes = new AdminRoutes();
     private authRoutes = new AuthRoutes();
+    private cropRoutes = new CropRoutes();
+    private inventoryRoutes = new inventoryRoutes()
 
     constructor() {
         this.connectionString = this.environment === "Development" ? this.localURL : this.environment === "Production" ? this.atlasURL : "";
@@ -39,8 +44,11 @@ export class Server {
     };
 
     private configureRoutes() {
+        this.server.use(cors())
         this.server.use(Express.json());
         this.server.use("/admin", this.adminRoutes.router);
         this.server.use("/auth", this.authRoutes.router);
+        this.server.use("/crops", this.cropRoutes.router);
+        this.server.use("/inventory", this.inventoryRoutes.router)
     };
 }

@@ -14,7 +14,7 @@ export class Auth {
         this.ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY || "";
     }
     createToken(id: string): string {
-        const token = Jwt.sign({ id: "id" }, this.ADMIN_SECRET_KEY, { expiresIn: "1h" });
+        const token = Jwt.sign({ id: id }, this.ADMIN_SECRET_KEY, { expiresIn: "1d" });
         return token;
     };
 
