@@ -2,7 +2,7 @@ import { Router } from "express";
 import { InventoryController } from "../Controller/inventory.Controller";
 import { AuthMiddleware } from "../Middleware/auth.Middleware";
 
-export class inventoryRoutes {
+class InventoryRoutes {
     router: Router
     controller: InventoryController
     middleware: AuthMiddleware
@@ -20,3 +20,5 @@ export class inventoryRoutes {
         this.router.get("/getinventoryitem/:id", this.middleware.requireAdmin, this.controller.getInventoryItem);
     }
 }
+
+export const inventoryRoutes = new InventoryRoutes();

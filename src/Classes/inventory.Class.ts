@@ -1,9 +1,7 @@
 import { InventoryModel } from "../Models/inventory.Model";
 import { IResponse } from "../Types/global.Types";
 import { IInventoryItem } from "../Types/inventory.Type";
-import { IError } from "./error.class";
-
-const handleError = new IError()
+import { iError } from "./error.class";
 
 export class Inventory {
     async createInventoryItem(inventoryItem: IInventoryItem): Promise<IResponse> {
@@ -13,7 +11,7 @@ export class Inventory {
 
             return { success: true, message: "Item created successfully" };
         } catch (error) {
-            const knownError = handleError.GetError(error)
+            const knownError = iError.GetError(error)
 
             if(knownError.success) {
                 return { success: false, message: knownError.message }
@@ -29,7 +27,7 @@ export class Inventory {
 
             return { success: true, message: "Success!", data: items };
         } catch (error) {
-            const knownError = handleError.GetError(error)
+            const knownError = iError.GetError(error)
 
             if (knownError.success) {
                 return { success: false, message: knownError.message }
@@ -44,7 +42,7 @@ export class Inventory {
 
             return { success: true, message: "Success!", data: item };
         } catch (error) {
-            const knownError = handleError.GetError(error)
+            const knownError = iError.GetError(error)
 
             if (knownError.success) {
                 return { success: false, message: knownError.message }

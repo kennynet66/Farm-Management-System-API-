@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { AuthController } from "../Controller/auth.Controller";
 
-export class AuthRoutes {
+class AuthRoutes {
     router: Router;
     controller: AuthController;
 
@@ -15,3 +15,5 @@ export class AuthRoutes {
         this.router.post("/login", this.controller.loginUser);
     }
 }
+
+export const authRoutes = new AuthRoutes();

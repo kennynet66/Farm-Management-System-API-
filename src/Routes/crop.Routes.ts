@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { cropController } from "../Controller/crop.Controller";
 
-export class CropRoutes {
+class CropRoutes {
     public router: Router;
     private controlller: cropController;
 
@@ -16,3 +16,5 @@ export class CropRoutes {
         this.router.get("/getcrops", this.controlller.getCrops);
     }
 }
+
+export const cropRoutes = new CropRoutes();

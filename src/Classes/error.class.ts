@@ -1,7 +1,7 @@
 import { MongooseError } from "mongoose";
 import { IResponse } from "../Types/global.Types";
 
-export class IError {
+class IError {
     private HandleMongoError(error: MongooseError): IResponse {
         console.log(error)
         if (error.name === "CastError") {
@@ -35,3 +35,5 @@ export class IError {
         return { success: false, message: "An unknown error occurred" };
     };
 }
+
+export const iError = new IError()

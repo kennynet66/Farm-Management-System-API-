@@ -1,9 +1,7 @@
 import { CropModel } from "../Models/crop.Model";
 import { ICrop } from "../Types/crop.Types";
 import { IResponse } from "../Types/global.Types";
-import { IError } from "./error.class";
-
-const errorHandler = new IError();
+import { iError } from "./error.class";
 
 export class Crop {
     async createCrop(crop: ICrop): Promise<IResponse> {
@@ -11,7 +9,7 @@ export class Crop {
             const cropCreated = await CropModel.create(crop);
             return { success: true, message: `Crop added successfully`, data: cropCreated }
         } catch (error) {
-            const knownError = errorHandler.GetError(error);
+            const knownError = iError.GetError(error);
             if(knownError.success) {
                 return { success: false, message: knownError.message };
             }
@@ -25,7 +23,7 @@ export class Crop {
 
             return { success: true, message: "Success!", data: crops}
         } catch (error) {
-            const knownError = errorHandler.GetError(error);
+            const knownError = iError.GetError(error);
             if (knownError.success) {
                 return { success: false, message: knownError.message };
             }

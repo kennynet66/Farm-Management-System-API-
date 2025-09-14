@@ -2,10 +2,8 @@ import dotenv from "dotenv";
 import { Admin } from "../Classes/admin.Class";
 import bcrypt from "bcryptjs";
 import { adminModel } from "../Models/admin.Model";
-import { IError } from "../Classes/error.class";
+import { iError } from "../Classes/error.class";
 dotenv.config();
-
-const errorHandler = new IError()
 
 export class AuthValidator {
     ADMIN_SECRET_KEY: string;
@@ -32,7 +30,7 @@ export class AuthValidator {
             const admin = await adminModel.findById(id);
             return !!admin;
         } catch (error) {
-            errorHandler.GetError(error);
+            iError.GetError(error);
             return false;
         }
     }

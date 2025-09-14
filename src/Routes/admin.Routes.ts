@@ -2,7 +2,7 @@ import { Router } from "express";
 import { AdminController } from "../Controller/admin.Controller";
 import { AuthMiddleware } from "../Middleware/auth.Middleware";
 
-export class AdminRoutes {
+class AdminRoutes {
     public router: Router;
     private controller: AdminController;
     private middleware: AuthMiddleware;
@@ -20,3 +20,5 @@ export class AdminRoutes {
         this.router.get("/fetchadmin/:id", this.middleware.requireAdmin, this.controller.fetchAdminById);
     }
 }
+
+export const adminRoutes = new AdminRoutes();

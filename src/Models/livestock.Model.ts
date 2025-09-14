@@ -12,7 +12,7 @@ const livestockSchema = new Schema({
     breed: {
         type: String,
         required: [true, "Animal breed is required"],
-        default: "N/A"
+        default: "Nan"
     },
     age: {
         type: Number,

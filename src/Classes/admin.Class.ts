@@ -1,9 +1,7 @@
 import { adminModel } from "../Models/admin.Model";
 import { IResponseAdmin, IAdmin } from "../Types/admin.Types";
 import { IResponse } from "../Types/global.Types";
-import { IError } from "./error.class";
-
-const errorHandler = new IError();
+import { iError } from "./error.class";
 
 export class Admin {
     async createAdmin(admin: IAdmin): Promise<IResponse> {
@@ -11,7 +9,7 @@ export class Admin {
             await adminModel.create(admin);
             return { success: true, message: "Admin created successfully" };
         } catch (error) {
-            const knownError = errorHandler.GetError(error);
+            const knownError = iError.GetError(error);
             if (knownError.success) {
                 return { success: false, message: knownError.message };
             }
@@ -24,7 +22,7 @@ export class Admin {
             const admins = await adminModel.find();
             return { success: true, message: "Admins found!", admins: admins };
         } catch (error) {
-            const knownError = errorHandler.GetError(error);
+            const knownError = iError.GetError(error);
             if (knownError.success) {
                 return { success: false, message: knownError.message };
             }
@@ -40,7 +38,7 @@ export class Admin {
             }
             return { success: true, message: "Admins found", admin };
         } catch (error) {
-            const knownError = errorHandler.GetError(error);
+            const knownError = iError.GetError(error);
             if (knownError.success) {
                 return { success: false, message: knownError.message };
             }
