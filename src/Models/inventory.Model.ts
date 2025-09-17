@@ -26,6 +26,27 @@ const inventorySchema = new Schema({
     value: {
         type: Number,
         required: [true, "Value is required"]
+    },
+    currentStock: {
+        type: Number,
+        required: [true, "Current stock is required"],
+    },
+    location: {
+        locationName: {
+            type: String,
+            required: [true, "Location name is required"],
+            default: "Not Set"
+        },
+        locationDescription: {
+            type: String,
+            required: true,
+            default: "Not set"
+        }
+    },
+    minStock: {
+        type: Number,
+        required: [false, "Mimnimum required stock cannot be empty"],
+        default: 1
     }
 });
 export const InventoryModel = model("Inventory", inventorySchema);

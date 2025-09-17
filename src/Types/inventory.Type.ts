@@ -1,8 +1,13 @@
+import { TUnits } from "./global.Types";
+
 export type IInventoryItem = {
-    name: string,
-    variety: string,
-    area: number,
-    cropStatus: string,
-    plantingDate: Date,
-    expectedHarvestDate: Date
+    itemName: string;
+    category: "supplies" | "equipment" | "seeds";
+    unit: TUnits;
+    itemsInStock: number;
+    purchaseDate: Date;
+    value: number;
+    currentStock: number;
+    location: string;
+    minStock: number;
 }
