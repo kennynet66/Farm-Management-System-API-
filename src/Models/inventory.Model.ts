@@ -15,10 +15,6 @@ const inventorySchema = new Schema({
         required: [true, "Unit of measurement is required"],
         enum: Units
     },
-    itemsInStock: {
-        type: Number,
-        required: [true, "Current stock is required"]
-    },
     purchaseDate: {
         type: Date,
         required: [true, "Item purchase date is required"]
@@ -45,8 +41,13 @@ const inventorySchema = new Schema({
     },
     minStock: {
         type: Number,
-        required: [false, "Mimnimum required stock cannot be empty"],
+        required: [false, "Minimum required stock cannot be empty"],
         default: 1
+    },
+    maxStock: {
+        type: Number,
+        required: [false, "Minimum required stock cannot be empty"],
+        default: 100
     }
 });
 export const InventoryModel = model("Inventory", inventorySchema);

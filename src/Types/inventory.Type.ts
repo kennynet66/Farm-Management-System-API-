@@ -13,4 +13,5 @@ export type IInventoryItem = {
         locationDescription: string
     };
     minStock: number;
+    maxStock: number;
 }
