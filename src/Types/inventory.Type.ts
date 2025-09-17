@@ -8,6 +8,9 @@ export type IInventoryItem = {
     purchaseDate: Date;
     value: number;
     currentStock: number;
-    location: string;
+    location: {
+        locationName: string,
+        locationDescription: string
+    };
     minStock: number;
 }
