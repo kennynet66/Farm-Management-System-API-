@@ -41,7 +41,7 @@ export class Server {
     };
 
     private configureRoutes() {
-        this.server.use(cors())
+        this.server.use(cors());
         this.server.use(Express.json());
         this.server.use("/admin", adminRoutes.router);
         this.server.use("/auth", authRoutes.router);

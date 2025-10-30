@@ -30,12 +30,12 @@ const inventorySchema = new Schema({
     location: {
         locationName: {
             type: String,
-            required: [true, "Location name is required"],
+            required: [false, "Location name is required"],
             default: "Not Set"
         },
         locationDescription: {
             type: String,
-            required: true,
+            required: [false, "Location description is required"],
             default: "Not set"
         }
     },

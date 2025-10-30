@@ -30,7 +30,7 @@ export class InventoryController {
     async getInventoryItems(req: Request, res: Response) {
         try {
             const itemsFetched = await inventory.getInventoryItems();
-            if(!itemsFetched.success) {
+            if (!itemsFetched.success) {
                 return res.status(400).json({
                     success: false,
                     message: itemsFetched.message
@@ -39,10 +39,24 @@ export class InventoryController {
             return res.status(200).json({
                 success: true,
                 message: itemsFetched.message,
-                Items: itemsFetched.data
+                ...itemsFetched.data
             });
         } catch (error) {
             throw Error(`An unknown error occurred while getting inventory items: \n ${error}`);
+        }
+    }
+
+    async deleteInventoryItemById(req: Request, res: Response) {
+        try {
+            const id = req.body.id;
+
+            await inventory.deleteInventoryItemById(id);
+            return res.status(200).json({
+                success: true,
+                message: "Item deleted successfully"
+            })
+        } catch (error) {
+            throw Error(`An unknown error occurred: ${error}`);
         }
     }
 
