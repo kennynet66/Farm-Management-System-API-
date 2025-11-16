@@ -33,7 +33,7 @@ export class Auth {
 
             return { success: true, message: "Admin logged in successfully!", token: token };
         } catch (error) {
-            console.log(`An error occurred while logging in the user of ID: ${error}`);
+            console.log(`An error occurred while logging in the user`, error);
             return { success: false, message: "Admin does not exist", token: null };
         }
     }
