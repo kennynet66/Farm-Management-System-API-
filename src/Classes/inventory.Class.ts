@@ -101,6 +101,9 @@ export class Inventory {
                 }
             }]
             const count = await InventoryModel.aggregate(pipeline);
+            if (count.length === 0) {
+                return [{ _id: null, totalValue: 0 }];
+            }
             return count;
         } catch (error) {
             return [{ _id: null, totalValue: 0 }];
