@@ -1,8 +1,15 @@
 export type T_Animal = {
-    name: string;
-    animalType: string;
-    breed?: string;
-    age: number;
+    tagNumber: string;
     sex: "male" | "female";
-    lastCheckup: Date;
+    birthDate: Date;
+    weight: string;
+    status: "active" | "sold" | "dead" | "sick",
+    notes?: string;
+    breedId: string;
+}
+
+export type livestockTypes = {
+    name: string,
+    description?: string,
+    isSystemDefault: boolean
 }

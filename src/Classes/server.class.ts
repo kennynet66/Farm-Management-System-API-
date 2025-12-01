@@ -8,6 +8,7 @@ import { cropRoutes } from "../Routes/crop.Routes";
 import { inventoryRoutes } from "../Routes/inventory.Route";
 import cors from "cors"
 import { livestockRoutes } from "../Routes/livestock.Routes";
+import { seedData } from "../Config/seed";
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ export class Server {
             console.error("Error while starting server", err.message);
         });
         this.connectMongoDB();
+        seedData.createDefaultLivestockTypes();
     };
 
     private connectMongoDB(): void {

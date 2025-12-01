@@ -1,4 +1,4 @@
-import { adminModel } from "../Models/admin.model";
+import { adminModel } from "../Models/admin.Model";
 import { IResponseAdmin, IAdmin } from "../Types/admin.Types";
 import { IResponse } from "../Types/global.Types";
 import { iError } from "./error.class";
@@ -13,7 +13,7 @@ export class Admin {
             if (knownError.success) {
                 return { success: false, message: knownError.message };
             }
-            return { success: false, message: "an unknown error occured while creating an admin" };
+            return { success: false, message: "An unknown error occured while creating an admin" };
         }
     };
 

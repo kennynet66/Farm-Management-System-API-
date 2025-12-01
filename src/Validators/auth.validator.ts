@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import { Admin } from "../Classes/admin.Class";
 import bcrypt from "bcryptjs";
 import { iError } from "../Classes/error.class";
-import { adminModel } from "../Models/admin.model";
+import { adminModel } from "../Models/admin.Model";
 dotenv.config();
 
 export class AuthValidator {
