@@ -12,10 +12,6 @@ const speciesSchema = new Schema({
     livestockTypeId: {
         type: String,
         required: [true, "Livestock type is required"]
-    },
-    isSystemDefault: {
-        type: Boolean,
-        required: true
     }
 }, { timestamps: true });
 

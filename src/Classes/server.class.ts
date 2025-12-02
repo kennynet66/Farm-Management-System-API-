@@ -33,6 +33,7 @@ export class Server {
         });
         this.connectMongoDB();
         seedData.createDefaultLivestockTypes();
+        seedData.createDefaultSpecies();
     };
 
     private connectMongoDB(): void {

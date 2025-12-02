@@ -1,4 +1,5 @@
 import { livestockTypes } from "../Models/livestockType";
+import { species } from "../Models/species";
 import { DefaultLivestockTypes } from "./defaultData";
 
 class SeedData {
@@ -27,6 +28,40 @@ class SeedData {
 
         } catch (error) {
             console.log(error)
+        }
+    }
+
+    async createDefaultSpecies(): Promise<void> {
+        try {
+            const speciesModel = species;
+            DefaultLivestockTypes.map((livestockType) => {
+                livestockType.defaultSpecies.map(async (defaultSpecies) => {
+
+                    const speciesExists = await speciesModel.findOne({ name: defaultSpecies.name });
+                    // Ensure the species ID matches livestockType ID
+                    if (livestockType.id === defaultSpecies.livestockTypeId) {
+                        // Create livestock category
+                        if (!speciesExists) {
+                            await speciesModel.create(defaultSpecies);
+                        }
+                        // Update the description if changed, and livestock type exists
+                        if (speciesExists && defaultSpecies.description !== speciesExists.description) {
+                            console.warn(
+                                `\x1b[38;5;208mWarning: Updating description for ${speciesExists.name}\x1b[0m`
+                            );
+                            await speciesModel.findOneAndUpdate({ name: speciesExists.name }, { description: defaultSpecies.description })
+                        }
+                    } else {
+                        return console.warn(
+                            `\x1b[38;5;208mWarning: ${defaultSpecies.name} has an invalid livestock ID and won't be created/updated \x1b[0m`
+                        );
+                    }
+
+                });
+            })
+
+        } catch (error) {
+            console.log(error);
         }
     }
 }
