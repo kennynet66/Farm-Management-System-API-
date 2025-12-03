@@ -8,8 +8,7 @@ class SeedData {
         try {
             const liveStockTypesModel = livestockTypes;
 
-
-            DefaultLivestockTypes.map(async (livestocktype) => {
+            for (const livestocktype of DefaultLivestockTypes) {
                 const livestockTypeExists = await liveStockTypesModel.findOne({ name: livestocktype.name });
 
                 // create livestock type if it does not exist
@@ -25,8 +24,7 @@ class SeedData {
                     await liveStockTypesModel.findOneAndUpdate({ name: livestocktype.name }, { description: livestocktype.description })
                 }
 
-            });
-
+            };
         } catch (error) {
             console.log(error)
         }
