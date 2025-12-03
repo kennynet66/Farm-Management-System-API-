@@ -1,3 +1,4 @@
+import { breed } from "../Models/breed";
 import { livestockTypes } from "../Models/livestockType";
 import { species } from "../Models/species";
 import { DefaultLivestockTypes } from "./defaultData";
@@ -39,6 +40,7 @@ class SeedData {
             for (const livestockType of DefaultLivestockTypes) {
                 for (const defaultSpecies of livestockType.defaultSpecies) {
 
+                    // Check if the species exists
                     const speciesExists = await speciesModel.findOne({ name: defaultSpecies.name });
 
                     // Get the livestock type ID
@@ -59,6 +61,37 @@ class SeedData {
                 }
             }
 
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async createDefaultBreeds() {
+        try {
+            const speciesModel = species;
+            const breedModel = breed;
+            for (const liveStockType of DefaultLivestockTypes) {
+                for (const defaultSpecies of liveStockType.defaultSpecies) {
+                    for (const defaultBreed of defaultSpecies.defaultBreeds) {
+                        // Check if the breed exists
+                        const breedExists = await breedModel.findOne({ name: defaultBreed.name });
+
+                        // Get the species Id
+                        const species = await speciesModel.findOne({ name: defaultSpecies.name });
+                        const existingSpeciesId = species?._id.toJSON();
+
+                        // Create a breed if it does not exist
+                        if (!breedExists) {
+                            await breedModel.create({ ...defaultBreed, speciesId: existingSpeciesId });
+                        }
+
+                        // Update the description if need be
+                        if (breedExists && defaultBreed.description !== breedExists.description) {
+                            await breedModel.findOneAndUpdate({ name: breedExists.name }, { description: defaultBreed.description });
+                        }
+                    }
+                }
+            }
         } catch (error) {
             console.log(error);
         }

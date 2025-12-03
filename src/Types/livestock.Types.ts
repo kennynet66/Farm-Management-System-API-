@@ -15,5 +15,10 @@ export type livestockTypes = {
     defaultSpecies: {
         name: string,
         description?: string
-    }[]
+        defaultBreeds: {
+            name: string,
+            description: string,
+            productionType: string
+        }[]
+    }[],
 }

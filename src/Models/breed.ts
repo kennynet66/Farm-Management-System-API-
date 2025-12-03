@@ -16,10 +16,6 @@ const breedSchema = new Schema({
     speciesId: {
         type: String,
         required: [true, "Species type is required"]
-    },
-    isSystemDefault: {
-        type: Boolean,
-        required: true
     }
 }, { timestamps: true })
 

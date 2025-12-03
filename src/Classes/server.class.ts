@@ -34,6 +34,7 @@ export class Server {
         this.connectMongoDB();
         seedData.createDefaultLivestockTypes();
         seedData.createDefaultSpecies();
+        seedData.createDefaultBreeds();
     };
 
     private connectMongoDB(): void {
