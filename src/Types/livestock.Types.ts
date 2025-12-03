@@ -9,13 +9,11 @@ export type T_Animal = {
 }
 
 export type livestockTypes = {
-    id: string,
     name: string,
     description?: string,
     isSystemDefault: boolean,
     defaultSpecies: {
         name: string,
-        description?: string,
-        livestockTypeId: string
+        description?: string
     }[]
 }
