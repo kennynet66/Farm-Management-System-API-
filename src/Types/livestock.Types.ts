@@ -2,7 +2,7 @@ export type T_Animal = {
     tagNumber: string;
     sex: "male" | "female";
     birthDate: Date;
-    weight: string;
+    weight: number;
     status: "active" | "sold" | "dead" | "sick",
     notes?: string;
     breedId: string;
