@@ -14,7 +14,8 @@ const breedSchema = new Schema({
         required: true
     },
     speciesId: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: "Species",
         required: [true, "Species type is required"]
     }
 }, { timestamps: true })

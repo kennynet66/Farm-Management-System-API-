@@ -28,7 +28,8 @@ const animalsSchema = new Schema({
         required: false
     },
     breedId: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: "Breed",
         required: [true, "Breed is required"]
     }
 }, { timestamps: true });

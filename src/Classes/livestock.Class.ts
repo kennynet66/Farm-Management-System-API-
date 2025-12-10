@@ -27,7 +27,18 @@ class Livestock {
 
     async getLivestock(): Promise<IResponse> {
         try {
-            const livestock = await animals.find();
+            const livestock = await animals.find().populate({
+                path: "breedId",
+                select: "name description productionType",
+                populate: {
+                    path: "speciesId",
+                    select: "name description",
+                    populate: {
+                        path: "livestockTypeId",
+                        select: "name description"
+                    }
+                }
+            });
 
             return { success: false, message: "Success!", data: livestock };
         } catch (error) {

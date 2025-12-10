@@ -10,7 +10,8 @@ const speciesSchema = new Schema({
         required: false
     },
     livestockTypeId: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: "Livestock types",
         required: [true, "Livestock type is required"]
     }
 }, { timestamps: true });
