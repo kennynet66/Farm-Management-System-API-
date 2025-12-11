@@ -17,13 +17,9 @@ dotenv.config();
 export class Server {
     private server = Express();
     environment: Environments = (process.env.Environment as Environments) || "Development";
-    private atlasURL: string = process.env.ATLAS_URL || "";
-    private localURL: string = process.env.LOCAL_URL || "";
-    private connectionString: string;
     private port: string = process.env.PORT || "";
 
     constructor() {
-        this.connectionString = this.environment === "Development" ? this.localURL : this.environment === "Production" ? this.atlasURL : "";
     };
 
     start(): void {
