@@ -9,6 +9,8 @@ import { inventoryRoutes } from "../Routes/inventory.Route";
 import cors from "cors"
 import { livestockRoutes } from "../Routes/livestock.Routes";
 import { runner } from "../Seeds/SeedRunner";
+import { AppDataSource } from "../data-source";
+import { Permissions } from "../entity/permissions";
 
 dotenv.config();
 
@@ -31,16 +33,16 @@ export class Server {
         }).on('error', (err) => {
             console.error("Error while starting server", err.message);
         });
-        this.connectMongoDB();
+        this.initializeDatabase();
         runner.run().catch(console.error)
     };
 
-    private connectMongoDB(): void {
-        mongoose.connect(this.connectionString)
-            .catch((error: MongooseError) => {
-                throw Error(error.message);
-            });
-    };
+    private async initializeDatabase() {
+        if (!AppDataSource.isInitialized) {
+            await AppDataSource.initialize();
+            Permissions.useDataSource(AppDataSource);
+        }
+    }
 
     private configureRoutes() {
         this.server.use(cors());
