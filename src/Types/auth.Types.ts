@@ -8,3 +8,9 @@ export type LoginDetails = {
 export type IResponseLogin = IResponse & {
     token: string | null,
 }
+
+export type TPerm = {
+    key: string;
+    name: string;
+    description: string;
+}

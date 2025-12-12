@@ -1,6 +1,5 @@
 import Express from "express";
 import dotenv from "dotenv";
-import mongoose, { MongooseError } from "mongoose";
 import { Environments } from "../Types/global.Types";
 import { adminRoutes } from "../Routes/admin.Routes";
 import { authRoutes } from "../Routes/auth.Routes";
@@ -10,16 +9,23 @@ import cors from "cors"
 import { livestockRoutes } from "../Routes/livestock.Routes";
 import { runner } from "../Seeds/SeedRunner";
 import { AppDataSource } from "../data-source";
-import { Permissions } from "../entity/permissions";
+import { Permissions } from "../entity/permissions.Entity";
+import { Roles } from "../entity/role.Entity";
+import { permissionRoutes } from "../Routes/permission.Routes";
+import mongoose, { MongooseError } from "mongoose";
 
 dotenv.config();
 
 export class Server {
     private server = Express();
     environment: Environments = (process.env.Environment as Environments) || "Development";
+    private atlasURL: string = process.env.ATLAS_URL || "";
+    private localURL: string = process.env.LOCAL_URL || "";
+    private connectionString: string;
     private port: string = process.env.PORT || "";
 
     constructor() {
+        this.connectionString = this.environment === "Development" ? this.localURL : this.environment === "Production" ? this.atlasURL : "";
     };
 
     start(): void {
@@ -29,14 +35,23 @@ export class Server {
         }).on('error', (err) => {
             console.error("Error while starting server", err.message);
         });
+        this.connectMongoDB();
         this.initializeDatabase();
         runner.run().catch(console.error)
+    };
+
+    private connectMongoDB(): void {
+        mongoose.connect(this.connectionString)
+            .catch((error: MongooseError) => {
+                throw Error(error.message);
+            });
     };
 
     private async initializeDatabase() {
         if (!AppDataSource.isInitialized) {
             await AppDataSource.initialize();
             Permissions.useDataSource(AppDataSource);
+            Roles.useDataSource(AppDataSource);
         }
     }
 
@@ -48,5 +63,6 @@ export class Server {
         this.server.use("/crops", cropRoutes.router);
         this.server.use("/inventory", inventoryRoutes.router);
         this.server.use("/livestock", livestockRoutes.router);
+        this.server.use("/permissions", permissionRoutes.router)
     };
 }
