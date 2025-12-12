@@ -7,7 +7,6 @@ import { cropRoutes } from "../Routes/crop.Routes";
 import { inventoryRoutes } from "../Routes/inventory.Route";
 import cors from "cors"
 import { livestockRoutes } from "../Routes/livestock.Routes";
-import { runner } from "../Seeds/SeedRunner";
 import { AppDataSource } from "../data-source";
 import { Permissions } from "../entity/permissions.Entity";
 import { Roles } from "../entity/role.Entity";
@@ -37,7 +36,6 @@ export class Server {
         });
         this.connectMongoDB();
         this.initializeDatabase();
-        runner.run().catch(console.error)
     };
 
     private connectMongoDB(): void {
