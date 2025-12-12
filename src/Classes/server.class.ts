@@ -12,6 +12,7 @@ import { Permissions } from "../entity/permissions.Entity";
 import { Roles } from "../entity/role.Entity";
 import { permissionRoutes } from "../Routes/permission.Routes";
 import mongoose, { MongooseError } from "mongoose";
+import { roleRoutes } from "../Routes/role.Routes";
 
 dotenv.config();
 
@@ -61,6 +62,7 @@ export class Server {
         this.server.use("/crops", cropRoutes.router);
         this.server.use("/inventory", inventoryRoutes.router);
         this.server.use("/livestock", livestockRoutes.router);
-        this.server.use("/permissions", permissionRoutes.router)
+        this.server.use("/permissions", permissionRoutes.router);
+        this.server.use("/roles", roleRoutes.router);
     };
 }

@@ -1,3 +1,4 @@
+import { ObjectId } from "typeorm";
 import { IResponse } from "./global.Types"
 
 export type LoginDetails = {
@@ -13,4 +14,12 @@ export type TPerm = {
     key: string;
     name: string;
     description: string;
+}
+
+export type TRole = {
+    key: string;
+    name: string;
+    description: string;
+    permissions: ObjectId[];
+    isSystemDefault?: boolean;
 }
