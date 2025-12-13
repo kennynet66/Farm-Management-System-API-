@@ -1,8 +1,9 @@
 import { ObjectId } from "mongodb";
 import { Permissions } from "../entity/permissions.Entity";
 import { Roles } from "../entity/role.Entity";
-import { TRole } from "../Types/auth.Types";
+import { TPerm, TRole } from "../Types/auth.Types";
 import { IResponse } from "../Types/global.Types";
+import { iError } from "./error.class";
 
 export class RoleClass {
     async createRole(newRole: TRole): Promise<IResponse> {
@@ -35,7 +36,32 @@ export class RoleClass {
             await role.save();
             return { success: true, message: "Role created successfully" };
         } catch (error) {
-            throw Error(`An unknown error occurred: ${error}`)
+            throw Error(`An unknown error occurred: ${error}`);
+        }
+    }
+
+    async updateRolePermissions(permissions: string[], role: string): Promise<IResponse> {
+        try {
+            // remove duplicate ids
+            const perms = Array.from(new Set(permissions));
+
+            // valid permissions
+            let validPermissions = [];
+
+            // Grab only the valid permissions
+            for (let index = 0; index < perms.length; index++) {
+                const existing = await Permissions.findOneBy({ _id: new ObjectId(perms[index]) });
+
+                if (existing) {
+                    validPermissions.push(existing._id);
+                }
+            }
+
+            await Roles.update({ _id: new ObjectId(role) }, { permissions: validPermissions });
+
+            return { success: true, message: "Updated successfully" };
+        } catch (error) {
+            throw Error(`An unknown error occurred: ${error}`);
         }
     }
 }
