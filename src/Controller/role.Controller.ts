@@ -33,4 +33,19 @@ export class RoleController {
             throw Error(`An unknown error occurred: ${error}`);
         }
     }
+
+
+    async fetchRoles(req: Request, res: Response) {
+        try {
+            const roles = await roleClass.fetchRoles();
+
+            if (!roles.success) {
+                return res.status(400).json({ message: roles.message });
+            }
+            return res.status(200).json({ success: true, message: roles.message, data: roles.data });
+        } catch (error) {
+            throw Error(`An unknown error occurred: ${error}`);
+
+        }
+    }
 }

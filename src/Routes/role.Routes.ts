@@ -14,6 +14,7 @@ export class RoleRoutes {
     initializeRoleRoutes() {
         this.router.post("/addRole", this.controller.createRole);
         this.router.put("/update-role-permissions/:id", this.controller.updateRolePermissions);
+        this.router.get("/fetch-roles", this.controller.fetchRoles);
     }
 }
 

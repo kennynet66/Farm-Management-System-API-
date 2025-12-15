@@ -64,6 +64,17 @@ export class RoleClass {
             throw Error(`An unknown error occurred: ${error}`);
         }
     }
+
+    async fetchRoles(): Promise<IResponse> {
+        try {
+            const roles = await Roles.find();
+
+            return { success: true, message: "Ok!", data: roles };
+        } catch (error) {
+            throw Error(`An unknown error occurred: ${error}`);
+
+        }
+    }
 }
 
 export const roleClass = new RoleClass();
