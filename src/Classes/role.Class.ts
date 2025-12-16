@@ -4,6 +4,8 @@ import { Roles } from "../entity/role.Entity";
 import { TPerm, TRole } from "../Types/auth.Types";
 import { IResponse } from "../Types/global.Types";
 import { iError } from "./error.class";
+import { In } from "typeorm";
+import { AppDataSource } from "../data-source";
 
 export class RoleClass {
     async createRole(newRole: TRole): Promise<IResponse> {
@@ -69,10 +71,38 @@ export class RoleClass {
         try {
             const roles = await Roles.find();
 
-            return { success: true, message: "Ok!", data: roles };
-        } catch (error) {
-            throw Error(`An unknown error occurred: ${error}`);
+            const permissionRepo = AppDataSource.getMongoRepository(Permissions);
 
+            // Collect all unique permission IDs from all roles
+            const allPermIds = [...new Set(
+                roles.flatMap(role => role.permissions.map(id => new ObjectId(id)))
+            )];
+
+            // Fetch all permissions in a single query
+            const allPermissions = await permissionRepo.find({
+                where: { _id: { $in: allPermIds } }
+            });
+
+            // Create a Map for quick lookup
+            const permMap = new Map(
+                allPermissions.map(perm => [perm._id.toString(), perm])
+            );
+
+            // Attach full permission objects to each role
+            const rolesWithPermissions = roles.map(role => ({
+                ...role,
+                permissions: role.permissions
+                    .map(id => permMap.get(id.toString()))
+                    .filter(Boolean) // Remove any null/undefined entries
+            }));
+
+            return {
+                success: true,
+                message: "Ok!",
+                data: rolesWithPermissions
+            };
+        } catch (error) {
+            throw new Error(`Failed to fetch roles: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
     }
 }

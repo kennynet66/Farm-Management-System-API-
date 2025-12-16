@@ -14,7 +14,7 @@ export class Roles extends BaseEntity {
     @Column()
     description!: string
 
-    @ObjectIdColumn()
+    @Column()
     permissions!: ObjectId[]
 
     @Column()
