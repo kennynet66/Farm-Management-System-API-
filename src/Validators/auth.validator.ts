@@ -13,7 +13,7 @@ export class AuthValidator {
     }
 
     async IsValidAdminPassword(password: string, id: string): Promise<boolean> {
-        const admin = await userClass.fetchAdminById(id);
+        const admin = await userClass.fetchUserById(id);
 
         if (!admin.admin) {
             return false

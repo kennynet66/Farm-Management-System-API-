@@ -32,6 +32,8 @@ export class User {
                 email: userInput.email,
                 password: userInput.password,
                 userName: userInput.userName,
+                lastName: userInput.lastName,
+                firstName: userInput.firstName,
                 role: role
             });
 
@@ -78,7 +80,18 @@ export class User {
     }
     async fetchUsers(): Promise<IResponseUser> {
         try {
-            const users = await Users.find();
+            const users = await Users.find({
+                select: {
+                    id: true,
+                    userName: true,
+                    lastName: true,
+                    firstName: true,
+                    email: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    role: true
+                }
+            });
             return { success: true, message: "Users found!", data: users };
         } catch (error) {
             const knownError = iError.GetError(error);
@@ -89,18 +102,23 @@ export class User {
         }
     }
 
-    async fetchAdminById(id: string): Promise<IResponseUser> {
+    async fetchUserById(id: string): Promise<IResponseUser> {
         try {
-            // const admin = await Users.findById(id);
-            //     if (!admin) {
-            //         return { success: false, message: "Admins not found" }
-            //     }
-            return { success: true, message: "Admins found", data: [] };
+            const user = await Users.find({
+                where: { id: id }, select: {
+                    id: true,
+                    userName: true,
+                    lastName: true,
+                    firstName: true,
+                    email: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    role: true
+                }
+            });
+
+            return { success: true, message: "User found", data: user };
         } catch (error) {
-            //     const knownError = iError.GetError(error);
-            //     if (knownError.success) {
-            //         return { success: false, message: knownError.message };
-            //     }
             return { success: false, message: "An unknown error occured while fetching admins!" }
         }
     }

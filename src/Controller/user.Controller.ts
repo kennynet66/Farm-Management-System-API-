@@ -23,20 +23,20 @@ export class AdminController {
     };
     async fetchUsers(req: Request, res: Response) {
         try {
-            const admin: IResponseUser = await userClass.fetchUsers();
-            return res.json({ admins: admin.data }).status(200);
+            const users: IResponseUser = await userClass.fetchUsers();
+            return res.json({ users: users.data }).status(200);
         } catch (error) {
             return res.json({ message: "An unknown error occurred while fetching admin" }).status(500);
         }
     };
-    async fetchAdminById(req: Request, res: Response) {
+    async fetchUserById(req: Request, res: Response) {
         try {
             const id: string = req.params.id;
-            const admin: IResponseUser = await userClass.fetchAdminById(id);
-            return res.json({ admin: admin.admin }).status(200);
+            const user: IResponseUser = await userClass.fetchUserById(id);
+            return res.json({ user: user.data }).status(200);
         } catch (error) {
             return res.status(500).json({
-                message: "An unknown error occurred while fetching admin by Id"
+                message: "An unknown error occurred while fetching user by Id"
             });
         }
     };
