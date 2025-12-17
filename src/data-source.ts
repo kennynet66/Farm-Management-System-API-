@@ -39,8 +39,8 @@ export const PostgresDataSource = new DataSource({
     password: password,
     database: database,
     entities: [],
-    synchronize: isProd,
-    logging: isProd,
+    synchronize: !isProd,
+    logging: !isProd,
     ssl: {
         rejectUnauthorized: false
     }
