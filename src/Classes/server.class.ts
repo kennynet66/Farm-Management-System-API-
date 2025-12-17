@@ -8,7 +8,7 @@ import { cropRoutes } from "../Routes/crop.Routes";
 import { inventoryRoutes } from "../Routes/inventory.Route";
 import cors from "cors"
 import { livestockRoutes } from "../Routes/livestock.Routes";
-import { AppDataSource } from "../data-source";
+import { AppDataSource, PostgresDataSource } from "../data-source";
 import { Permissions } from "../entity/permissions.Entity";
 import { Roles } from "../entity/role.Entity";
 import { permissionRoutes } from "../Routes/permission.Routes";
@@ -54,6 +54,7 @@ export class Server {
             Permissions.useDataSource(AppDataSource);
             Roles.useDataSource(AppDataSource);
             Users.useDataSource(AppDataSource);
+            await PostgresDataSource.initialize();
         }
     }
 
