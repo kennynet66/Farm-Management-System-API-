@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import jwt, { JsonWebTokenError, JwtPayload } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import { AuthValidator } from "../Validators/auth.validator";
-import { IRequest } from "../Types/admin.Types";
+import { IRequest } from "../Types/user.Types";
 dotenv.config();
 
 const authValidator = new AuthValidator();
@@ -27,7 +27,7 @@ export class AuthMiddleware {
                         message: err?.message
                     });
                 } else {
-                    const adminExists = await authValidator.AdminExistsById(decodedToken.id);
+                    const adminExists = await authValidator.UserExistsById(decodedToken.id);
                     if (!adminExists) return res.status(401).json({ message: "Invalid token" })
                     next();
                 }

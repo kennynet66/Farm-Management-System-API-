@@ -20,7 +20,7 @@ export class Auth {
 
     async loginAdmin(loginDetails: LoginDetails): Promise<IResponseLogin> {
         try {
-            const adminExists = await authValidator.AdminExistsByUsername(loginDetails.userName);
+            const adminExists = await authValidator.UserExistsByUsername(loginDetails.userName);
             if (!adminExists.success || !adminExists.id) return { success: false, message: "Admin does not exist", token: null };
 
             const isValidAdminPassword = await authValidator.IsValidAdminPassword(loginDetails.password, adminExists.id);

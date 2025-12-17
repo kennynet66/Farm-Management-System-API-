@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { Admin } from "../Classes/admin.Class";
+import { userClass } from "../Classes/user.Class";
 import bcrypt from "bcryptjs";
 import { iError } from "../Classes/error.class";
 import { adminModel } from "../Models/admin.Model";
@@ -13,8 +13,7 @@ export class AuthValidator {
     }
 
     async IsValidAdminPassword(password: string, id: string): Promise<boolean> {
-        const adminClass = new Admin();
-        const admin = await adminClass.fetchAdminById(id);
+        const admin = await userClass.fetchAdminById(id);
 
         if (!admin.admin) {
             return false
@@ -25,7 +24,7 @@ export class AuthValidator {
         return isValidPassword;
     }
 
-    async AdminExistsById(id: string): Promise<boolean> {
+    async UserExistsById(id: string): Promise<boolean> {
         try {
             const admin = await adminModel.findById(id);
             return !!admin;
@@ -35,7 +34,7 @@ export class AuthValidator {
         }
     }
 
-    async AdminExistsByUsername(userName: string): Promise<{ success: boolean, id?: string }> {
+    async UserExistsByUsername(userName: string): Promise<{ success: boolean, id?: string }> {
         const admin = await adminModel.findOne({ userName: userName });
         if (!admin) {
             return { success: !!admin };
@@ -43,7 +42,7 @@ export class AuthValidator {
         return { success: !!admin, id: admin._id.toString() };
     }
 
-    async AdminExistsByEmail(email: string): Promise<{ success: boolean, id?: string }> {
+    async UserExistsByEmail(email: string): Promise<{ success: boolean, id?: string }> {
         const admin = await adminModel.findOne({ email: email });
         if (!admin) {
             return { success: !!admin };

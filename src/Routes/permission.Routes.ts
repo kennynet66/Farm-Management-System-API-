@@ -13,6 +13,7 @@ class PermissionRoutes {
 
     private initializePermissionRoutes() {
         this.router.post("/addPermission", this.controller.createPermission);
+        this.router.get("/fetchPermission", this.controller.fetchPermissions);
     }
 }
 

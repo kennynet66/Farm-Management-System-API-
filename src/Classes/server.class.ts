@@ -1,7 +1,8 @@
 import Express from "express";
 import dotenv from "dotenv";
+import "reflect-metadata";
 import { Environments } from "../Types/global.Types";
-import { adminRoutes } from "../Routes/admin.Routes";
+import { userRoutes } from "../Routes/user.Routes";
 import { authRoutes } from "../Routes/auth.Routes";
 import { cropRoutes } from "../Routes/crop.Routes";
 import { inventoryRoutes } from "../Routes/inventory.Route";
@@ -13,6 +14,7 @@ import { Roles } from "../entity/role.Entity";
 import { permissionRoutes } from "../Routes/permission.Routes";
 import mongoose, { MongooseError } from "mongoose";
 import { roleRoutes } from "../Routes/role.Routes";
+import { Users } from "../entity/user.Entity";
 
 dotenv.config();
 
@@ -51,13 +53,14 @@ export class Server {
             await AppDataSource.initialize();
             Permissions.useDataSource(AppDataSource);
             Roles.useDataSource(AppDataSource);
+            Users.useDataSource(AppDataSource);
         }
     }
 
     private configureRoutes() {
         this.server.use(cors());
         this.server.use(Express.json());
-        this.server.use("/admin", adminRoutes.router);
+        this.server.use("/users", userRoutes.router);
         this.server.use("/auth", authRoutes.router);
         this.server.use("/crops", cropRoutes.router);
         this.server.use("/inventory", inventoryRoutes.router);

@@ -4,6 +4,7 @@ import { Environments } from "./Types/global.Types"
 import dotenv from "dotenv";
 import { Permissions } from "./entity/permissions.Entity";
 import { Roles } from "./entity/role.Entity";
+import { Users } from "./entity/user.Entity";
 
 dotenv.config();
 
@@ -18,7 +19,7 @@ export const AppDataSource = new DataSource({
     url: connectionString,
     synchronize: true,
     logging: true,
-    entities: [Permissions, Roles],
+    entities: [Permissions, Roles, Users],
     migrations: [],
     subscribers: [],
     migrationsRun: true

@@ -32,6 +32,16 @@ export class PermissionClass {
             throw Error(`An unknown error occurred ${error}`)
         }
     }
+
+    async fetchPermissions(): Promise<IResponse> {
+        try {
+            const permissions = await Permissions.find();
+
+            return { success: true, message: "Ok!", data: permissions }
+        } catch (error) {
+            throw Error(`An unknown error occurred ${error}`);
+        }
+    }
 }
 
 export const permissionClass = new PermissionClass();
