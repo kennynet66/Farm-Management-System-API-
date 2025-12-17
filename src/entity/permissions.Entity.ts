@@ -1,13 +1,13 @@
-import { Entity, Column, ObjectId, ObjectIdColumn, BaseEntity, CreateDateColumn, UpdateDateColumn, Index } from "typeorm"
+import { Entity, Column, BaseEntity, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, ManyToMany } from "typeorm"
+import { Roles } from "./role.Entity"
 
 @Entity()
 export class Permissions extends BaseEntity {
 
-    @ObjectIdColumn()
-    _id!: ObjectId
+    @PrimaryGeneratedColumn('uuid')
+    id!: string
 
-    @Column()
-    @Index({ unique: true })
+    @Column({ unique: true })
     key!: string
 
     @Column()
@@ -15,6 +15,9 @@ export class Permissions extends BaseEntity {
 
     @Column()
     description!: string
+
+    @ManyToMany(() => Roles, (role) => role.permissions)
+    roles!: Roles[];
 
     @CreateDateColumn()
     createdAt!: Date

@@ -12,12 +12,6 @@ export class PermissionClass {
 
             const permission = new Permissions();
 
-            // Check if permission exists
-            const existing = await Permissions.findOne({ where: { key: perm.key.toUpperCase() } })
-
-            if (existing?.key.toUpperCase() === perm.key.toUpperCase()) {
-                return { success: false, message: "Permission with this key already exists" }
-            }
             permission.description = perm.description;
             permission.key = perm.key.toUpperCase().trim();
             permission.name = perm.name;

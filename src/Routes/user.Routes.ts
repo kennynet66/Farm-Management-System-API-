@@ -15,8 +15,8 @@ class UserRoutes {
     }
 
     private initializeAdminRoutes() {
-        this.router.post("/create-user", this.controller.createAdmin);
-        this.router.get("/fetch-users", this.controller.fetchAdmin);
+        this.router.post("/create-user", this.controller.createUser);
+        this.router.get("/fetch-users", this.controller.fetchUsers);
         this.router.get("/fetch-user/:id", this.middleware.requireAdmin, this.controller.fetchAdminById);
     }
 }

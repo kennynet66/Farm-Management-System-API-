@@ -1,8 +1,7 @@
 import dotenv from "dotenv";
-import jwt, { JsonWebTokenError, JwtPayload } from "jsonwebtoken";
+import jwt, { JsonWebTokenError } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import { AuthValidator } from "../Validators/auth.validator";
-import { IRequest } from "../Types/user.Types";
 dotenv.config();
 
 const authValidator = new AuthValidator();

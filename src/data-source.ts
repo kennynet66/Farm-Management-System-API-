@@ -25,7 +25,7 @@ export const AppDataSource = new DataSource({
     url: connectionString,
     synchronize: true,
     logging: true,
-    entities: [Permissions, Roles, Users],
+    entities: [],
     migrations: [],
     subscribers: [],
     migrationsRun: true
@@ -38,7 +38,7 @@ export const PostgresDataSource = new DataSource({
     username: username,
     password: password,
     database: database,
-    entities: [],
+    entities: [Permissions, Roles, Users],
     synchronize: !isProd,
     logging: !isProd,
     ssl: {

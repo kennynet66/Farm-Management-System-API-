@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { T_Animal } from "../Types/livestock.Types";
 import { livestock } from "../Classes/livestock.Class";
-import { iError } from "../Classes/error.class";
 
 export class LivestockController {
     async addLivestock(req: Request, res: Response) {

@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { userClass } from "../Classes/user.Class";
-import { IResponseAdmin, IUser } from "../Types/user.Types";
+import { IResponseUser, IUser } from "../Types/user.Types";
 import bcrypt from "bcryptjs";
 
 export class AdminController {
-    async createAdmin(req: Request, res: Response) {
+    async createUser(req: Request, res: Response) {
         try {
             const user: IUser = req.body;
 
@@ -21,10 +21,10 @@ export class AdminController {
             });
         }
     };
-    async fetchAdmin(req: Request, res: Response) {
+    async fetchUsers(req: Request, res: Response) {
         try {
-            const admin: IResponseAdmin = await userClass.fetchAdmins();
-            return res.json({ admins: admin.admins }).status(200);
+            const admin: IResponseUser = await userClass.fetchUsers();
+            return res.json({ admins: admin.data }).status(200);
         } catch (error) {
             return res.json({ message: "An unknown error occurred while fetching admin" }).status(500);
         }
@@ -32,7 +32,7 @@ export class AdminController {
     async fetchAdminById(req: Request, res: Response) {
         try {
             const id: string = req.params.id;
-            const admin: IResponseAdmin = await userClass.fetchAdminById(id);
+            const admin: IResponseUser = await userClass.fetchAdminById(id);
             return res.json({ admin: admin.admin }).status(200);
         } catch (error) {
             return res.status(500).json({

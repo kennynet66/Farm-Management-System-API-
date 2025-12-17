@@ -1,4 +1,3 @@
-import { ObjectId } from "typeorm";
 import { IResponse } from "./global.Types"
 
 export type LoginDetails = {
@@ -20,6 +19,6 @@ export type TRole = {
     key: string;
     name: string;
     description: string;
-    permissions: ObjectId[];
+    permissions: TPerm[];
     isSystemDefault?: boolean;
 }

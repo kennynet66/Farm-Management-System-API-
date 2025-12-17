@@ -1,105 +1,118 @@
-import { ObjectId } from "mongodb";
 import { Permissions } from "../entity/permissions.Entity";
 import { Roles } from "../entity/role.Entity";
-import { TPerm, TRole } from "../Types/auth.Types";
+import { TRole } from "../Types/auth.Types";
 import { IResponse } from "../Types/global.Types";
-import { iError } from "./error.class";
 import { In } from "typeorm";
-import { AppDataSource } from "../data-source";
 
 export class RoleClass {
     async createRole(newRole: TRole): Promise<IResponse> {
         try {
-            // check if name, permissions and key are not empty
-            if (!newRole || newRole.key === "" || newRole.name === "" || newRole.permissions.length <= 0) { }
-            const role = new Roles()
-
-            // check if role key exists
-            const existing = await Roles.findOne({ where: { key: newRole.key.toUpperCase() } });
-
-            if (existing?.key.toUpperCase() === newRole.key.toUpperCase()) {
-                return { success: false, message: "Role with this key already exists" }
+            // Validate required fields
+            if (!newRole || newRole.key === "" || newRole.name === "" || newRole.permissions.length <= 0) {
+                return { success: false, message: "Key, name, and permissions are required" };
             }
 
-            // check if permission Id's are valid
-            for (const perm of newRole.permissions) {
-                const validPerm = await Permissions.findOneBy({ _id: new ObjectId(perm) });
-                if (!validPerm) {
-                    return { success: false, message: `Invalid permission ID: ${perm}` }
-                }
-            }
-
-            role.description = newRole.description.trim();
-            role.key = newRole.key.toUpperCase().trim();
-            role.name = newRole.name.trim();
-            role.isSystemDefault = newRole.isSystemDefault || false;
-            role.permissions = newRole.permissions;
-
-            await role.save();
-            return { success: true, message: "Role created successfully" };
-        } catch (error) {
-            throw Error(`An unknown error occurred: ${error}`);
-        }
-    }
-
-    async updateRolePermissions(permissions: string[], role: string): Promise<IResponse> {
-        try {
-            // remove duplicate ids
-            const perms = Array.from(new Set(permissions));
-
-            // valid permissions
-            let validPermissions = [];
-
-            // Grab only the valid permissions
-            for (let index = 0; index < perms.length; index++) {
-                const existing = await Permissions.findOneBy({ _id: new ObjectId(perms[index]) });
-
-                if (existing) {
-                    validPermissions.push(existing._id);
-                }
-            }
-
-            await Roles.update({ _id: new ObjectId(role) }, { permissions: validPermissions });
-
-            return { success: true, message: "Updated successfully" };
-        } catch (error) {
-            throw Error(`An unknown error occurred: ${error}`);
-        }
-    }
-
-    async fetchRoles(): Promise<IResponse> {
-        try {
-            const roles = await Roles.find();
-
-            const permissionRepo = AppDataSource.getMongoRepository(Permissions);
-
-            // Collect all unique permission IDs from all roles
-            const allPermIds = [...new Set(
-                roles.flatMap(role => role.permissions.map(id => new ObjectId(id)))
-            )];
-
-            // Fetch all permissions in a single query
-            const allPermissions = await permissionRepo.find({
-                where: { _id: { $in: allPermIds } }
+            // Check if role with same key already exists
+            const existingRole = await Roles.findOne({
+                where: { key: newRole.key.toUpperCase().trim() }
             });
 
-            // Create a Map for quick lookup
-            const permMap = new Map(
-                allPermissions.map(perm => [perm._id.toString(), perm])
-            );
+            if (existingRole) {
+                return { success: false, message: "Role with this key already exists" };
+            }
 
-            // Attach full permission objects to each role
-            const rolesWithPermissions = roles.map(role => ({
-                ...role,
-                permissions: role.permissions
-                    .map(id => permMap.get(id.toString()))
-                    .filter(Boolean) // Remove any null/undefined entries
-            }));
+            // Fetch the actual Permissions entities
+            const permissions = await Permissions.find({
+                where: { id: In(newRole.permissions) }
+            });
+
+            // Validate that all permission IDs were found
+            if (permissions.length !== newRole.permissions.length) {
+                return {
+                    success: false,
+                    message: `Some permission IDs are invalid. Found ${permissions.length} of ${newRole.permissions.length}`
+                };
+            }
+
+            // Create role
+            const role = Roles.create({
+                key: newRole.key.toUpperCase().trim(),
+                name: newRole.name.trim(),
+                description: newRole.description.trim(),
+                isSystemDefault: newRole.isSystemDefault || false,
+                permissions: permissions
+            });
+
+            await role.save();
+
+            return {
+                success: true,
+                message: "Role created successfully",
+                data: role
+            };
+        } catch (error) {
+            throw new Error(`Failed to create role: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+    }
+
+    async updateRolePermissions(permissions: string[], roleId: string): Promise<IResponse> {
+        try {
+            // Remove duplicate IDs
+            const uniquePermissionIds = Array.from(new Set(permissions));
+
+            if (uniquePermissionIds.length === 0) {
+                return { success: false, message: "At least one permission is required" };
+            }
+
+            // Find the role with existing permissions
+            const role = await Roles.findOne({
+                where: { id: roleId },
+                relations: ['permissions']
+            });
+
+            if (!role) {
+                return { success: false, message: "Role not found" };
+            }
+
+            // Fetch valid permission entities (not just IDs!)
+            const validPermissions = await Permissions.find({
+                where: { id: In(uniquePermissionIds) }
+            });
+
+            if (validPermissions.length === 0) {
+                return { success: false, message: "No valid permissions found" };
+            }
+
+            // Update role permissions with entities
+            role.permissions = validPermissions;
+            await role.save();
+
+            return {
+                success: true,
+                message: `Updated successfully. Applied ${validPermissions.length} of ${uniquePermissionIds.length} permissions`,
+                data: {
+                    roleId: role.id,
+                    appliedPermissions: validPermissions.length,
+                    requestedPermissions: uniquePermissionIds.length
+                }
+            };
+        } catch (error) {
+            throw new Error(`Failed to update role permissions: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+    }
+    async fetchRoles(): Promise<IResponse> {
+        try {
+            const roles = await Roles.find({
+                relations: { permissions: true },
+                select: {
+                    permissions: { key: true, name: true, description: true }
+                }
+            });
 
             return {
                 success: true,
                 message: "Ok!",
-                data: rolesWithPermissions
+                data: roles
             };
         } catch (error) {
             throw new Error(`Failed to fetch roles: ${error instanceof Error ? error.message : 'Unknown error'}`);

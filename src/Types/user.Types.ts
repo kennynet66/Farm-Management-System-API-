@@ -1,15 +1,14 @@
 import { Request } from "express"
 import { IResponse } from "./global.Types"
-import { ObjectId } from "typeorm"
 
 export type IUser = {
     userName: string
     email: string
     password: string
-    role: ObjectId
+    role: string
 }
 
-export type IResponseAdmin = IResponse & {
+export type IResponseUser = IResponse & {
     admins?: IUser[]
     admin?: IUser
 }

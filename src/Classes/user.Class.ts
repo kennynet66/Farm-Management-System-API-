@@ -1,46 +1,38 @@
-import { adminModel } from "../Models/admin.Model";
-import { IResponseAdmin, IUser } from "../Types/user.Types";
+import { IResponseUser, IUser } from "../Types/user.Types";
 import { IResponse } from "../Types/global.Types";
 import { iError } from "./error.class";
 import { Users } from "../entity/user.Entity";
 import { Roles } from "../entity/role.Entity";
-import { ObjectId } from "mongodb";
 
 export class User {
-    async createUser(user: IUser): Promise<IResponse> {
+    async createUser(userInput: IUser): Promise<IResponse> {
         try {
-            // Validate required fields
-            if (!user.email || !user.password || !user.userName) {
-                return { success: false, message: "Email, password, and username are required!" };
+            if (!userInput.email || !userInput.password || !userInput.userName) {
+                return { success: false, message: "Required fields missing!" };
             }
 
-            if (!user.role) {
-                return { success: false, message: "Role is required!" };
+            // Check if role exists (with permissions loaded)
+            const role = await Roles.findOne({
+                where: { id: userInput.role },
+                relations: ['permissions']
+            });
+
+            if (!role) {
+                return { success: false, message: `Invalid role ID` };
             }
 
-            const roleId = typeof user.role === 'string'
-                ? new ObjectId(user.role)
-                : user.role;
-
-
-            // Check if the role exists
-            const roleExists = await Roles.findOneBy({ _id: roleId });
-            if (!roleExists) {
-                return { success: false, message: `Invalid role ID: ${user.role}` };
-            }
-
-            // Check if email already exists (recommended)
-            const existingUser = await Users.findOneBy({ email: user.email });
+            // Check if email exists
+            const existingUser = await Users.findOneBy({ email: userInput.email });
             if (existingUser) {
                 return { success: false, message: "Email already in use" };
             }
 
-            // Create and save user
+            // Create user
             const newUser = Users.create({
-                email: user.email,
-                password: user.password,
-                role: roleId,
-                userName: user.userName
+                email: userInput.email,
+                password: userInput.password,
+                userName: userInput.userName,
+                role: role
             });
 
             await newUser.save();
@@ -54,7 +46,37 @@ export class User {
             return { success: false, message: "An unknown error occurred while creating a user" };
         }
     }
-    async fetchAdmins(): Promise<IResponseAdmin> {
+
+    async getUserWithPermissions(userId: string): Promise<IResponse> {
+        try {
+            const user = await Users.findOne({
+                where: { id: userId },
+                relations: ['role', 'role.permissions']
+            });
+
+            if (!user) {
+                return { success: false, message: "User not found" };
+            }
+
+            // Access permissions through role
+            const permissions = user.role.permissions;
+
+            return {
+                success: true,
+                message: "Ok",
+                data: {
+                    id: user.id,
+                    userName: user.userName,
+                    email: user.email,
+                    role: user.role,
+                    permissions: permissions
+                }
+            };
+        } catch (error) {
+            throw new Error(`Failed to fetch user: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+    }
+    async fetchUsers(): Promise<IResponseUser> {
         try {
             const users = await Users.find();
             return { success: true, message: "Users found!", data: users };
@@ -67,7 +89,7 @@ export class User {
         }
     }
 
-    async fetchAdminById(id: string): Promise<IResponseAdmin> {
+    async fetchAdminById(id: string): Promise<IResponseUser> {
         try {
             // const admin = await Users.findById(id);
             //     if (!admin) {

@@ -1,12 +1,12 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, Index, ObjectId, ObjectIdColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Roles } from "./role.Entity";
 
 @Entity()
 export class Users extends BaseEntity {
-    @ObjectIdColumn()
-    _id!: ObjectId;
+    @PrimaryGeneratedColumn('uuid')
+    id!: string;
 
-    @Column()
-    @Index({ unique: true })
+    @Column({ unique: true })
     userName!: string;
 
     @Column()
@@ -15,8 +15,9 @@ export class Users extends BaseEntity {
     @Column()
     password!: string
 
-    @Column('ObjectId')
-    role!: ObjectId;
+    @ManyToOne(() => Roles, { eager: true })
+    @JoinColumn()
+    role!: Roles;
 
     @CreateDateColumn()
     createdAt!: Date
