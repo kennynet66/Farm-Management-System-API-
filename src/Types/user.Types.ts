@@ -11,8 +11,8 @@ export type IUser = {
 }
 
 export type IResponseUser = IResponse & {
-    admins?: IUser[]
-    admin?: IUser
+    users?: IUser[]
+    user?: IUser
 }
 
 export type IRequest = Request & {

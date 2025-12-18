@@ -22,3 +22,8 @@ export type TRole = {
     permissions: TPerm[];
     isSystemDefault?: boolean;
 }
+
+export enum RoleLevels {
+    ADMIN = "ADMIN",
+    FARMMANAGER = "FARMMANAGER"
+}

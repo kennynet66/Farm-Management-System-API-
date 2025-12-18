@@ -6,7 +6,6 @@ dotenv.config();
 
 const authValidator = new AuthValidator();
 
-
 export class AuthMiddleware {
     async requireAdmin(req: Request, res: Response, next: NextFunction) {
         try {
@@ -27,7 +26,8 @@ export class AuthMiddleware {
                     });
                 } else {
                     const adminExists = await authValidator.UserExistsById(decodedToken.id);
-                    if (!adminExists) return res.status(401).json({ message: "Invalid token" })
+                    if (!adminExists) return res.status(401).json({ message: "Invalid token" });
+                    if (decodedToken.role.key !== "ADMIN") res.status(401).json({ message: "Unauthorized access!" });
                     next();
                 }
             });
@@ -39,4 +39,46 @@ export class AuthMiddleware {
         }
 
     }
+
+    async requireFarmManager(req: Request, res: Response, next: NextFunction) {
+        try {
+            const authHeader = req.headers['authorization'];
+            const token = authHeader && authHeader.split(' ')[1];
+
+            if (!token) {
+                return res.status(401).json({
+                    message: "Unauthorized access!"
+                });
+            }
+
+            jwt.verify(token, authValidator.ADMIN_SECRET_KEY, async (err, decodedToken: any) => {
+                if (err as JsonWebTokenError) {
+                    return res.status(401).json({
+                        message: err?.message
+                    });
+                } else {
+                    const adminExists = await authValidator.UserExistsById(decodedToken.id);
+                    if (!adminExists) {
+                        return res.status(401).json({ message: "Invalid token" });
+                    }
+
+                    // Allow both ADMIN and FARMMANAGER roles
+                    const allowedRoles = ["ADMIN", "FARMMANAGER"];
+                    if (allowedRoles.includes(decodedToken.role.key)) {
+                        return next();
+                    }
+
+                    return res.status(401).json({
+                        message: "Unauthorized access!"
+                    });
+                }
+            });
+
+        } catch (error) {
+            res.status(500).json({
+                message: `An unknown error occurred in auth middleware: ${error}`
+            });
+        }
+    }
+
 }

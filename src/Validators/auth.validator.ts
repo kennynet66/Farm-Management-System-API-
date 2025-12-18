@@ -1,8 +1,7 @@
 import dotenv from "dotenv";
-import { userClass } from "../Classes/user.Class";
 import bcrypt from "bcryptjs";
 import { iError } from "../Classes/error.class";
-import { adminModel } from "../Models/admin.Model";
+import { Users } from "../entity/user.Entity";
 dotenv.config();
 
 export class AuthValidator {
@@ -12,42 +11,44 @@ export class AuthValidator {
         this.ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY || "";
     }
 
-    async IsValidAdminPassword(password: string, id: string): Promise<boolean> {
-        const admin = await userClass.fetchUserById(id);
+    async IsValidUserPassword(password: string, id: string): Promise<boolean> {
+        const user = await Users.findOne({
+            where: { id: id }
+        });
 
-        if (!admin.admin) {
+        if (!user) {
             return false
         }
 
-        const isValidPassword = await bcrypt.compare(password, admin.admin.password);
+        const isValidPassword = await bcrypt.compare(password, user.password);
 
         return isValidPassword;
     }
 
     async UserExistsById(id: string): Promise<boolean> {
         try {
-            const admin = await adminModel.findById(id);
-            return !!admin;
+            const user = await Users.findOne({ where: { id: id } });
+            return !!user;
         } catch (error) {
             iError.GetError(error);
             return false;
         }
     }
 
-    async UserExistsByUsername(userName: string): Promise<{ success: boolean, id?: string }> {
-        const admin = await adminModel.findOne({ userName: userName });
-        if (!admin) {
-            return { success: !!admin };
+    async UserExistsByUsername(userName: string) {
+        const user = await Users.findOne({ where: { userName: userName } });
+        if (!user) {
+            return { success: !!user, role: undefined };
         }
-        return { success: !!admin, id: admin._id.toString() };
+        return { success: !!user, id: user.id, role: user.role };
     }
 
     async UserExistsByEmail(email: string): Promise<{ success: boolean, id?: string }> {
-        const admin = await adminModel.findOne({ email: email });
-        if (!admin) {
-            return { success: !!admin };
+        const user = await Users.findOne({ where: { email: email } });
+        if (!user) {
+            return { success: !!user };
         }
-        return { success: !!admin, id: admin._id.toString() };
+        return { success: !!user, id: user.id };
     }
 
 }

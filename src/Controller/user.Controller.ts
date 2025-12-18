@@ -3,7 +3,7 @@ import { userClass } from "../Classes/user.Class";
 import { IResponseUser, IUser } from "../Types/user.Types";
 import bcrypt from "bcryptjs";
 
-export class AdminController {
+export class UserController {
     async createUser(req: Request, res: Response) {
         try {
             const user: IUser = req.body;
@@ -26,7 +26,7 @@ export class AdminController {
             const users: IResponseUser = await userClass.fetchUsers();
             return res.json({ users: users.data }).status(200);
         } catch (error) {
-            return res.json({ message: "An unknown error occurred while fetching admin" }).status(500);
+            return res.json({ message: "An unknown error occurred while fetching user" }).status(500);
         }
     };
     async fetchUserById(req: Request, res: Response) {

@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import Jwt from "jsonwebtoken";
-import { IResponseLogin, LoginDetails } from "../Types/auth.Types";
+import { IResponseLogin, LoginDetails, TRole } from "../Types/auth.Types";
 import { AuthValidator } from "../Validators/auth.validator";
 
 dotenv.config();
@@ -13,28 +13,30 @@ export class Auth {
     constructor() {
         this.ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY || "";
     }
-    createToken(id: string): string {
-        const token = Jwt.sign({ id: id }, this.ADMIN_SECRET_KEY, { expiresIn: "30d" });
+    createToken(id: string, role: TRole): string {
+        const token = Jwt.sign({ id: id, role: role }, this.ADMIN_SECRET_KEY, { expiresIn: "30d" });
         return token;
     };
 
-    async loginAdmin(loginDetails: LoginDetails): Promise<IResponseLogin> {
+    async loginUser(loginDetails: LoginDetails): Promise<IResponseLogin> {
         try {
-            const adminExists = await authValidator.UserExistsByUsername(loginDetails.userName);
-            if (!adminExists.success || !adminExists.id) return { success: false, message: "Admin does not exist", token: null };
+            // check if user exists
+            const userExists = await authValidator.UserExistsByUsername(loginDetails.userName);
+            if (!userExists.success || !userExists.id) return { success: false, message: "User does not exist", token: null };
 
-            const isValidAdminPassword = await authValidator.IsValidAdminPassword(loginDetails.password, adminExists.id);
+            // check if password is valid
+            const isValidUserPassword = await authValidator.IsValidUserPassword(loginDetails.password, userExists.id);
 
-            if (!isValidAdminPassword) {
+            if (!isValidUserPassword) {
                 return { success: false, message: "Incorrect password!", token: null };
             }
 
-            const token = this.createToken(adminExists.id);
+            const token = this.createToken(userExists.id, userExists.role);
 
-            return { success: true, message: "Admin logged in successfully!", token: token };
+            return { success: true, message: "User logged in successfully!", token: token };
         } catch (error) {
             console.log(`An error occurred while logging in the user`, error);
-            return { success: false, message: "Admin does not exist", token: null };
+            return { success: false, message: "User does not exist", token: null };
         }
     }
 }

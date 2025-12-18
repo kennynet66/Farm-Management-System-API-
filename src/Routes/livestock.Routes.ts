@@ -15,9 +15,9 @@ class LivestockRoutes {
     }
 
     private initializeLivestockRoutes() {
-        this.router.post("/addlivestock", this.controller.addLivestock);
-        this.router.get("/fetchlivestock", this.controller.fetchLivestock);
-        this.router.get("/fetchlivestock/:id", this.controller.fetchLivestockById);
+        this.router.post("/addlivestock", this.middleware.requireFarmManager, this.controller.addLivestock);
+        this.router.get("/fetchlivestock", this.middleware.requireFarmManager, this.controller.fetchLivestock);
+        this.router.get("/fetchlivestock/:id", this.middleware.requireFarmManager, this.controller.fetchLivestockById);
     }
 }
 

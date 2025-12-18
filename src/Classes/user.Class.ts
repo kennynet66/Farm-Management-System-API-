@@ -98,7 +98,7 @@ export class User {
             if (knownError.success) {
                 return { success: false, message: knownError.message };
             }
-            return { success: false, message: "An unknown error occured while fetching admins!" }
+            return { success: false, message: "An unknown error occured while fetching users!" }
         }
     }
 
@@ -119,7 +119,7 @@ export class User {
 
             return { success: true, message: "User found", data: user };
         } catch (error) {
-            return { success: false, message: "An unknown error occured while fetching admins!" }
+            return { success: false, message: "An unknown error occured while fetching users!" }
         }
     }
 }

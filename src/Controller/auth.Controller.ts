@@ -7,8 +7,8 @@ export class AuthController {
     async loginUser(req: Request, res: Response) {
         try {
             const loginDetails: LoginDetails = req.body;
-            const loginAdmin = await auth.loginAdmin(loginDetails);
-            return res.status(200).json({ message: loginAdmin.message, token: loginAdmin.token });
+            const loginUser = await auth.loginUser(loginDetails);
+            return res.status(200).json({ message: loginUser.message, token: loginUser.token });
         } catch (error) {
             res.status(500).json({
                 message: "An unknown error ocurred",

@@ -1,23 +1,23 @@
 import { Router } from "express";
-import { AdminController } from "../Controller/user.Controller";
+import { UserController } from "../Controller/user.Controller";
 import { AuthMiddleware } from "../Middleware/auth.Middleware";
 
 class UserRoutes {
     public router: Router;
-    private controller: AdminController;
+    private controller: UserController;
     private middleware: AuthMiddleware;
 
     constructor() {
         this.router = Router();
-        this.controller = new AdminController();
+        this.controller = new UserController();
         this.middleware = new AuthMiddleware();
-        this.initializeAdminRoutes();
+        this.initializeUserRoutes();
     }
 
-    private initializeAdminRoutes() {
-        this.router.post("/create-user", this.controller.createUser);
-        this.router.get("/fetch-users", this.controller.fetchUsers);
-        this.router.get("/fetch-user/:id", this.controller.fetchUserById);
+    private initializeUserRoutes() {
+        this.router.post("/create-user", this.middleware.requireAdmin, this.controller.createUser);
+        this.router.get("/fetch-users", this.middleware.requireAdmin, this.controller.fetchUsers);
+        this.router.get("/fetch-user/:id", this.middleware.requireAdmin, this.controller.fetchUserById);
     }
 }
 

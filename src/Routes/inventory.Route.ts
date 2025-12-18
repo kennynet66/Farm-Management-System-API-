@@ -15,10 +15,10 @@ class InventoryRoutes {
     }
 
     initializeInventoryRoutes() {
-        this.router.post("/createinventoryitem", this.middleware.requireAdmin, this.controller.createInventoryItem);
-        this.router.get("/getinventoryitems", this.middleware.requireAdmin, this.controller.getInventoryItems);
-        this.router.get("/getinventoryitem/:id", this.middleware.requireAdmin, this.controller.getInventoryItem);
-        this.router.delete("/deleteinventoryitem", this.middleware.requireAdmin, this.controller.deleteInventoryItemById);
+        this.router.post("/createinventoryitem", this.middleware.requireFarmManager, this.controller.createInventoryItem);
+        this.router.get("/getinventoryitems", this.middleware.requireFarmManager, this.controller.getInventoryItems);
+        this.router.get("/getinventoryitem/:id", this.middleware.requireFarmManager, this.controller.getInventoryItem);
+        this.router.delete("/deleteinventoryitem", this.middleware.requireFarmManager, this.controller.deleteInventoryItemById);
     }
 }
 
