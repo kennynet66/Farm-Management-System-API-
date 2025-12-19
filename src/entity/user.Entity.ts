@@ -1,5 +1,6 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Roles } from "./role.Entity";
+import { Farms } from "./farm.Entity";
 
 @Entity()
 export class Users extends BaseEntity {
@@ -24,6 +25,9 @@ export class Users extends BaseEntity {
     @ManyToOne(() => Roles, { eager: true })
     @JoinColumn()
     role!: Roles;
+
+    @OneToMany(() => Farms, (farm) => farm.manager)
+    farms!: Farms[]
 
     @CreateDateColumn()
     createdAt!: Date

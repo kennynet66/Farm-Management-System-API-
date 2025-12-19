@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { Permissions } from "./entity/permissions.Entity";
 import { Roles } from "./entity/role.Entity";
 import { Users } from "./entity/user.Entity";
+import { Farms } from "./entity/farm.Entity";
 
 dotenv.config();
 
@@ -38,7 +39,7 @@ export const PostgresDataSource = new DataSource({
     username: username,
     password: password,
     database: database,
-    entities: [Permissions, Roles, Users],
+    entities: [Permissions, Roles, Users, Farms],
     synchronize: !isProd,
     logging: !isProd,
     ssl: isProd ? {

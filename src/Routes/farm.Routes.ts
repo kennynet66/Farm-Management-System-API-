@@ -1,0 +1,24 @@
+import { Router } from "express";
+import { FarmController } from "../Controller/farm.Controller";
+import { AuthMiddleware } from "../Middleware/auth.Middleware";
+
+class FarmRoutes {
+    router: Router;
+    private controller: FarmController
+    private middleware: AuthMiddleware
+
+    constructor() {
+        this.router = Router();
+        this.controller = new FarmController();
+        this.middleware = new AuthMiddleware();
+        this.initializeFarmRoutes()
+    }
+
+    initializeFarmRoutes() {
+        this.router.post("/add-farm", this.middleware.requireFarmManager, this.controller.createFarm);
+        this.router.get("/get-farms", this.middleware.requireAdmin, this.controller.getFarms);
+        this.router.get("/get-farm/:id", this.middleware.requireFarmManager, this.controller.getFarmById);
+    }
+}
+
+export const farmRoutes = new FarmRoutes();
