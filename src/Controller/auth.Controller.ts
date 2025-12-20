@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import { Auth } from "../Classes/auth.Class";
 import { LoginDetails } from "../Types/auth.Types";
+import { IUser } from "../Types/user.Types";
+import bcrypt from "bcryptjs";
+import { userClass } from "../Classes/user.Class";
 
 const auth = new Auth();
 export class AuthController {
@@ -15,4 +18,22 @@ export class AuthController {
             })
         }
     };
+
+    async registerUser(req: Request, res: Response) {
+        try {
+            const user: IUser = req.body;
+
+            user.password = await bcrypt.hash(user.password, 10);
+
+            const userCreated = await userClass.createUser({ ...user, role: "FARMMANAGER" });
+
+            return res.status(200).json({
+                message: userCreated.message
+            })
+        } catch (error) {
+            return res.status(500).json({
+                message: "An unknown error occurred while creating user"
+            });
+        }
+    }
 }

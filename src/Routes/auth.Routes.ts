@@ -13,6 +13,7 @@ class AuthRoutes {
 
     private initializeRoutes() {
         this.router.post("/login", this.controller.loginUser);
+        this.router.post("/register-user", this.controller.registerUser);
     }
 }
 

@@ -13,12 +13,12 @@ export class User {
 
             // Check if role exists (with permissions loaded)
             const role = await Roles.findOne({
-                where: { id: userInput.role },
+                where: { key: userInput.role },
                 relations: ['permissions']
             });
 
             if (!role) {
-                return { success: false, message: `Invalid role ID` };
+                return { success: false, message: `Invalid role` };
             }
 
             // Check if email exists

@@ -5,7 +5,7 @@ export type IUser = {
     userName: string
     email: string
     password: string
-    role: string
+    role?: string
     firstName: string
     lastName: string
 }
