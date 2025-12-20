@@ -7,7 +7,7 @@ export class PermissionClass {
     async createPermission(perm: TPerm): Promise<IResponse> {
         try {
             if (!perm || perm.key === "" || perm.name === "") {
-                return { success: false, message: "Invalid permission" }
+                return { success: false, message: "Invalid permission", data: [] }
             }
 
             const permission = new Permissions();
@@ -17,11 +17,11 @@ export class PermissionClass {
             permission.name = perm.name;
             await permission.save();
 
-            return { success: true, message: "Permission created successfully" }
+            return { success: true, message: "Permission created successfully", data: [] }
         } catch (error) {
             const knownError = iError.GetError(error);
             if (knownError.success) {
-                return { success: false, message: knownError.message };
+                return { success: false, message: knownError.message, data: [] };
             }
             throw Error(`An unknown error occurred ${error}`)
         }

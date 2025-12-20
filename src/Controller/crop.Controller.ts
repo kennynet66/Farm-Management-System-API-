@@ -17,8 +17,7 @@ export class cropController {
                 })
             }
             return res.status(200).json({
-                success: true,
-                message: `${cropCreated.data.name} created successfully!`
+                ...cropCreated
             });
         } catch (error) {
             throw Error(`An error occurred while creating a crop ${error}`)
@@ -28,7 +27,7 @@ export class cropController {
     async getCrops(req: Request, res: Response) {
         try {
             const fetchCrops = await crop.getCrops();
-            return res.status(200).json({ success: true, Crops: fetchCrops.data });
+            return res.status(200).json({ ...fetchCrops });
         } catch (error) {
             throw Error(`An error occurred while getting crops:\n ${error}`);
         }

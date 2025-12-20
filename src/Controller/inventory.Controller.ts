@@ -14,13 +14,11 @@ export class InventoryController {
 
             if (!itemCreated.success) {
                 return res.status(400).json({
-                    success: false,
-                    message: itemCreated.message
+                    ...itemCreated
                 })
             }
             return res.status(200).json({
-                success: true,
-                message: itemCreated.message
+                ...itemCreated
             })
         } catch (error) {
             throw Error(`An unknown error occurred while creating an inventory item: \n${error} `)
@@ -32,14 +30,11 @@ export class InventoryController {
             const itemsFetched = await inventory.getInventoryItems();
             if (!itemsFetched.success) {
                 return res.status(400).json({
-                    success: false,
-                    message: itemsFetched.message
+                    ...itemsFetched
                 })
             }
             return res.status(200).json({
-                success: true,
-                message: itemsFetched.message,
-                ...itemsFetched.data
+                ...itemsFetched
             });
         } catch (error) {
             throw Error(`An unknown error occurred while getting inventory items: \n ${error}`);
@@ -50,10 +45,9 @@ export class InventoryController {
         try {
             const id = req.body.id;
 
-            await inventory.deleteInventoryItemById(id);
+            const itemDeleted = await inventory.deleteInventoryItemById(id);
             return res.status(200).json({
-                success: true,
-                message: "Item deleted successfully"
+                ...itemDeleted
             })
         } catch (error) {
             throw Error(`An unknown error occurred: ${error}`);
@@ -65,9 +59,7 @@ export class InventoryController {
             const id = req.params.id || ""
             const itemFetched = await inventory.getInventoryItem(id);
             return res.status(200).json({
-                success: true,
-                message: itemFetched.message,
-                Item: itemFetched.data
+                ...itemFetched
             });
         } catch (error) {
             throw Error(`An unknown error occurred while getting inventory item: \n ${error}`);

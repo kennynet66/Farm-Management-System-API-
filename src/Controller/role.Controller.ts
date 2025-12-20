@@ -10,9 +10,9 @@ export class RoleController {
             const roleCreated = await roleClass.createRole(newRole);
 
             if (!roleCreated.success) {
-                return res.status(400).json({ message: roleCreated.message });
+                return res.status(400).json({ ...roleCreated });
             }
-            return res.status(201).json({ message: roleCreated.message });
+            return res.status(201).json({ ...roleCreated });
         } catch (error) {
             throw Error(`An unknown error occurred: ${error}`);
         }
@@ -26,9 +26,9 @@ export class RoleController {
             const roleUpdated = await roleClass.updateRolePermissions(permissions, roleId);
 
             if (!roleUpdated.success) {
-                return res.status(400).json({ message: roleUpdated.message });
+                return res.status(400).json({ ...roleUpdated });
             }
-            return res.status(200).json({ message: roleUpdated.message });
+            return res.status(200).json({ ...roleUpdated });
         } catch (error) {
             throw Error(`An unknown error occurred: ${error}`);
         }
@@ -40,9 +40,9 @@ export class RoleController {
             const roles = await roleClass.fetchRoles();
 
             if (!roles.success) {
-                return res.status(400).json({ message: roles.message });
+                return res.status(400).json({ ...roles });
             }
-            return res.status(200).json({ success: true, message: roles.message, data: roles.data });
+            return res.status(200).json({ ...roles });
         } catch (error) {
             throw Error(`An unknown error occurred: ${error}`);
 

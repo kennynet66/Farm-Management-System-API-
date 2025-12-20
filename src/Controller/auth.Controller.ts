@@ -11,7 +11,7 @@ export class AuthController {
         try {
             const loginDetails: LoginDetails = req.body;
             const loginUser = await auth.loginUser(loginDetails);
-            return res.status(200).json({ message: loginUser.message, token: loginUser.token });
+            return res.status(200).json({ ...loginUser });
         } catch (error) {
             res.status(500).json({
                 message: "An unknown error ocurred",
@@ -28,7 +28,7 @@ export class AuthController {
             const userCreated = await userClass.createUser({ ...user, role: "FARMMANAGER" });
 
             return res.status(200).json({
-                message: userCreated.message
+                ...userCreated
             })
         } catch (error) {
             return res.status(500).json({

@@ -10,16 +10,16 @@ class Livestock {
             const breedExists = await breed.findById(animal.breedId);
 
             if (!breedExists) {
-                return { success: false, message: `Invalid breed ID: ${animal.breedId}` }
+                return { success: false, message: `Invalid breed ID: ${animal.breedId}`, data: [] }
             }
 
             const animalCreated = await animals.create(animal);
 
-            return { success: true, message: `${animalCreated.tagNumber} added successfully!` }
+            return { success: true, message: `${animalCreated.tagNumber} added successfully!`, data: [] }
         } catch (error) {
             const knownError = iError.GetError(error);
             if (knownError.success) {
-                return { success: false, message: knownError.message }
+                return { success: false, message: knownError.message, data: [] }
             }
             throw Error(`An unknown error occurred while adding livestock ${error}`);
         }
@@ -44,7 +44,7 @@ class Livestock {
         } catch (error) {
             const knownError = iError.GetError(error);
             if (knownError.success) {
-                return { success: false, message: knownError.message }
+                return { success: false, message: knownError.message, data: [] }
             }
             throw Error(`An unkown error occurred while fetching livestock ${error}`);
         }
@@ -54,11 +54,11 @@ class Livestock {
         try {
             const data = await animals.findById(id);
 
-            return { success: true, message: "Success!", data };
+            return { success: true, message: "Success!", data: [data] };
         } catch (error) {
             const knownError = iError.GetError(error);
             if (knownError.success) {
-                return { success: false, message: knownError.message }
+                return { success: false, message: knownError.message, data: [] }
             }
             throw Error(`An unkown error occurred while fetching livestock ${error}`);
         }

@@ -10,15 +10,15 @@ export class Inventory {
 
             const itemCreated = await InventoryModel.create(inventoryItem);
 
-            return { success: true, message: "Item created successfully" };
+            return { success: true, message: "Item created successfully", data: [] };
         } catch (error) {
             const knownError = iError.GetError(error)
 
             if (knownError.success) {
-                return { success: false, message: knownError.message }
+                return { success: false, message: knownError.message, data: [] }
             }
 
-            return { success: false, message: `An unknown error occurred\n${error}` }
+            return { success: false, message: `An unknown error occurred\n${error}`, data: [] }
         }
     }
 
@@ -31,14 +31,14 @@ export class Inventory {
             const totalValue = await this.getInventoryTotalValue();
             const formattedTotalValue = moneyFormatter.formatKES(totalValue[0].totalValue)
 
-            return { success: true, message: "Success!", data: { Items, lowStockItems, totalInventoryItems, inventoryItemsCountByCategory, totalValue: formattedTotalValue } };
+            return { success: true, message: "Success!", data: [{ Items, lowStockItems, totalInventoryItems, inventoryItemsCountByCategory, totalValue: formattedTotalValue }] };
         } catch (error) {
             const knownError = iError.GetError(error)
 
             if (knownError.success) {
-                return { success: false, message: knownError.message }
+                return { success: false, message: knownError.message, data: [] }
             }
-            return { success: false, message: `An unknown error occurred \n${error}` }
+            return { success: false, message: `An unknown error occurred \n${error}`, data: [] }
         }
     }
 
@@ -46,14 +46,14 @@ export class Inventory {
         try {
             const item = await InventoryModel.findById(id);
 
-            return { success: true, message: "Success!", data: item };
+            return { success: true, message: "Success!", data: [item] };
         } catch (error) {
             const knownError = iError.GetError(error)
 
             if (knownError.success) {
-                return { success: false, message: knownError.message }
+                return { success: false, message: knownError.message, data: [] }
             }
-            return { success: false, message: `An unknown error occurred \n${error}` }
+            return { success: false, message: `An unknown error occurred \n${error}`, data: [] }
         }
     }
 
@@ -61,14 +61,14 @@ export class Inventory {
         try {
             const itemDeleted = await InventoryModel.deleteMany({ _id: id })
 
-            return { success: true, message: "Success!" };
+            return { success: true, message: "Success!", data: [] };
         } catch (error) {
             const knownError = iError.GetError(error)
 
             if (knownError.success) {
-                return { success: false, message: knownError.message }
+                return { success: false, message: knownError.message, data: [] }
             }
-            return { success: false, message: `An unknown error occurred \n${error}` }
+            return { success: false, message: `An unknown error occurred \n${error}`, data: [] }
         }
     }
 

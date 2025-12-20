@@ -8,7 +8,7 @@ class FarmClass {
     async createFarm(newFarmDetails: T_Farm): Promise<IResponse> {
         try {
             if (newFarmDetails.county === "" || newFarmDetails.subCounty === "" || newFarmDetails.farmName === "" || newFarmDetails.farmSize <= 0 || newFarmDetails.manager === "") {
-                return { success: false, message: "Invalid farm details" };
+                return { success: false, message: "Invalid farm details", data: [] };
             }
 
             // Fetch actual user entities
@@ -17,7 +17,7 @@ class FarmClass {
             })
 
             if (!manager) {
-                return { success: false, message: "Invalid manager Id!" };
+                return { success: false, message: "Invalid manager Id!", data: [] };
             }
 
             const farm = Farms.create({
@@ -31,7 +31,7 @@ class FarmClass {
 
             await farm.save();
 
-            return { success: true, message: "Farm added successfully!" };
+            return { success: true, message: "Farm added successfully!", data: [] };
         } catch (error) {
             throw Error(`An unknown error occurred ${error}`);
         }
@@ -100,7 +100,7 @@ class FarmClass {
                 }
             });
 
-            return { success: true, message: "success!", data: farm };
+            return { success: true, message: "success!", data: [farm] };
         } catch (error) {
             throw Error(`An unknown error occurred while fetching farms ${error}`);
         }

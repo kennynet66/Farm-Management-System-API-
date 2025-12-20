@@ -22,21 +22,21 @@ export class Auth {
         try {
             // check if user exists
             const userExists = await authValidator.UserExistsByUsername(loginDetails.userName);
-            if (!userExists.success || !userExists.id) return { success: false, message: "User does not exist", token: null };
+            if (!userExists.success || !userExists.id) return { success: false, message: "User does not exist", token: null, data: [] };
 
             // check if password is valid
             const isValidUserPassword = await authValidator.IsValidUserPassword(loginDetails.password, userExists.id);
 
             if (!isValidUserPassword) {
-                return { success: false, message: "Incorrect password!", token: null };
+                return { success: false, message: "Incorrect password!", token: null, data: [] };
             }
 
             const token = this.createToken(userExists.id, userExists.role);
 
-            return { success: true, message: "User logged in successfully!", token: token };
+            return { success: true, message: "User logged in successfully!", token: token, data: [] };
         } catch (error) {
             console.log(`An error occurred while logging in the user`, error);
-            return { success: false, message: "User does not exist", token: null };
+            return { success: false, message: "User does not exist", token: null, data: [] };
         }
     }
 }

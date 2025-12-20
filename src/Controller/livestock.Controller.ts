@@ -8,9 +8,9 @@ export class LivestockController {
             const animalDetails: T_Animal = req.body;
             const animalCreated = await livestock.addLivestock(animalDetails);
             if (!animalCreated.success) {
-                return res.status(400).json({ message: animalCreated.message });
+                return res.status(400).json({ ...animalCreated });
             }
-            return res.status(201).json({ message: animalCreated.message });
+            return res.status(201).json({ ...animalCreated });
         } catch (error) {
             throw Error(`An unknown error occurred: ${error}`);
         }
@@ -20,7 +20,7 @@ export class LivestockController {
         try {
             const Livestock = await livestock.getLivestock();
 
-            return res.status(200).json({ Livestock: Livestock.data });
+            return res.status(200).json({ ...Livestock });
         } catch (error) {
             throw Error(`An unknown error occurred: ${error}`);
         }
@@ -30,7 +30,7 @@ export class LivestockController {
             const id: string = req.params.id;
             const Livestock = await livestock.getLivestockById(id);
             if (!Livestock.success) return res.status(200).json({ message: Livestock.message });
-            return res.status(200).json({ Livestock: Livestock.data || [] });
+            return res.status(200).json({ ...Livestock });
         } catch (error) {
             throw Error(`An unknown error occurred ${error}`);
         }

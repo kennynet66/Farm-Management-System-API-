@@ -7,13 +7,13 @@ export class Crop {
     async createCrop(crop: ICrop): Promise<IResponse> {
         try {
             const cropCreated = await CropModel.create(crop);
-            return { success: true, message: `Crop added successfully`, data: cropCreated }
+            return { success: true, message: `Crop added successfully`, data: [cropCreated] }
         } catch (error) {
             const knownError = iError.GetError(error);
-            if(knownError.success) {
-                return { success: false, message: knownError.message };
+            if (knownError.success) {
+                return { success: false, message: knownError.message, data: [] };
             }
-            return { success: false, message: `An unknown error occurred while creating the crop: ${crop.name}` }
+            return { success: false, message: `An unknown error occurred while creating the crop: ${crop.name}`, data: [] }
         }
     }
 
@@ -21,13 +21,13 @@ export class Crop {
         try {
             const crops = await CropModel.find();
 
-            return { success: true, message: "Success!", data: crops}
+            return { success: true, message: "Success!", data: crops }
         } catch (error) {
             const knownError = iError.GetError(error);
             if (knownError.success) {
-                return { success: false, message: knownError.message };
+                return { success: false, message: knownError.message, data: [] };
             }
-            return { success: false, message: `An unknown error occurred while creating the crop` }            
+            return { success: false, message: `An unknown error occurred while creating the crop`, data: [] }
         }
     }
 }

@@ -8,7 +8,14 @@ export class User {
     async createUser(userInput: IUser): Promise<IResponse> {
         try {
             if (!userInput.email || !userInput.password || !userInput.userName) {
-                return { success: false, message: "Required fields missing!" };
+                return { success: false, message: "Required fields missing!", data: [] };
+            }
+
+            // Check if username exists
+            const userNameExists = await Users.findOneBy({ userName: userInput.userName.trim().toLowerCase() });
+
+            if (userNameExists) {
+                return { success: false, message: "Username already in use!", data: [] }
             }
 
             // Check if role exists (with permissions loaded)
@@ -18,20 +25,20 @@ export class User {
             });
 
             if (!role) {
-                return { success: false, message: `Invalid role` };
+                return { success: false, message: `Invalid role`, data: [] };
             }
 
             // Check if email exists
             const existingUser = await Users.findOneBy({ email: userInput.email });
             if (existingUser) {
-                return { success: false, message: "Email already in use" };
+                return { success: false, message: "Email already in use", data: [] };
             }
 
             // Create user
             const newUser = Users.create({
                 email: userInput.email,
                 password: userInput.password,
-                userName: userInput.userName,
+                userName: userInput.userName.trim().toLowerCase(),
                 lastName: userInput.lastName,
                 firstName: userInput.firstName,
                 role: role
@@ -39,13 +46,13 @@ export class User {
 
             await newUser.save();
 
-            return { success: true, message: "User created successfully" };
+            return { success: true, message: "User created successfully", data: [] };
         } catch (error) {
             const knownError = iError.GetError(error);
             if (knownError.success) {
-                return { success: false, message: knownError.message };
+                return { success: false, message: knownError.message, data: [] };
             }
-            return { success: false, message: "An unknown error occurred while creating a user" };
+            return { success: false, message: "An unknown error occurred while creating a user", data: [] };
         }
     }
 
@@ -57,7 +64,7 @@ export class User {
             });
 
             if (!user) {
-                return { success: false, message: "User not found" };
+                return { success: false, message: "User not found", data: [] };
             }
 
             // Access permissions through role
@@ -66,13 +73,13 @@ export class User {
             return {
                 success: true,
                 message: "Ok",
-                data: {
+                data: [{
                     id: user.id,
                     userName: user.userName,
                     email: user.email,
                     role: user.role,
                     permissions: permissions
-                }
+                }]
             };
         } catch (error) {
             throw new Error(`Failed to fetch user: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -96,9 +103,9 @@ export class User {
         } catch (error) {
             const knownError = iError.GetError(error);
             if (knownError.success) {
-                return { success: false, message: knownError.message };
+                return { success: false, message: knownError.message, data: [] };
             }
-            return { success: false, message: "An unknown error occured while fetching users!" }
+            return { success: false, message: "An unknown error occured while fetching users!", data: [] }
         }
     }
 
@@ -119,7 +126,7 @@ export class User {
 
             return { success: true, message: "User found", data: user };
         } catch (error) {
-            return { success: false, message: "An unknown error occured while fetching users!" }
+            return { success: false, message: "An unknown error occured while fetching users!", data: [] }
         }
     }
 }

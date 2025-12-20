@@ -9,7 +9,7 @@ export class RoleClass {
         try {
             // Validate required fields
             if (!newRole || newRole.key === "" || newRole.name === "" || newRole.permissions.length <= 0) {
-                return { success: false, message: "Key, name, and permissions are required" };
+                return { success: false, message: "Key, name, and permissions are required", data: [] };
             }
 
             // Check if role with same key already exists
@@ -18,7 +18,7 @@ export class RoleClass {
             });
 
             if (existingRole) {
-                return { success: false, message: "Role with this key already exists" };
+                return { success: false, message: "Role with this key already exists", data: [] };
             }
 
             // Fetch the actual Permissions entities
@@ -30,7 +30,7 @@ export class RoleClass {
             if (permissions.length !== newRole.permissions.length) {
                 return {
                     success: false,
-                    message: `Some permission IDs are invalid. Found ${permissions.length} of ${newRole.permissions.length}`
+                    message: `Some permission IDs are invalid. Found ${permissions.length} of ${newRole.permissions.length}`, data: []
                 };
             }
 
@@ -48,7 +48,7 @@ export class RoleClass {
             return {
                 success: true,
                 message: "Role created successfully",
-                data: role
+                data: [role]
             };
         } catch (error) {
             throw new Error(`Failed to create role: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -61,7 +61,7 @@ export class RoleClass {
             const uniquePermissionIds = Array.from(new Set(permissions));
 
             if (uniquePermissionIds.length === 0) {
-                return { success: false, message: "At least one permission is required" };
+                return { success: false, message: "At least one permission is required", data: [] };
             }
 
             // Find the role with existing permissions
@@ -71,7 +71,7 @@ export class RoleClass {
             });
 
             if (!role) {
-                return { success: false, message: "Role not found" };
+                return { success: false, message: "Role not found", data: [] };
             }
 
             // Fetch valid permission entities (not just IDs!)
@@ -80,7 +80,7 @@ export class RoleClass {
             });
 
             if (validPermissions.length === 0) {
-                return { success: false, message: "No valid permissions found" };
+                return { success: false, message: "No valid permissions found", data: [] };
             }
 
             // Update role permissions with entities
@@ -90,11 +90,11 @@ export class RoleClass {
             return {
                 success: true,
                 message: `Updated successfully. Applied ${validPermissions.length} of ${uniquePermissionIds.length} permissions`,
-                data: {
+                data: [{
                     roleId: role.id,
                     appliedPermissions: validPermissions.length,
                     requestedPermissions: uniquePermissionIds.length
-                }
+                }]
             };
         } catch (error) {
             throw new Error(`Failed to update role permissions: ${error instanceof Error ? error.message : 'Unknown error'}`);

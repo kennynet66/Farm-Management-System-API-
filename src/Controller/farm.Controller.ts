@@ -9,9 +9,9 @@ export class FarmController {
             const farmCreated = await farmClass.createFarm(farmDetails);
 
             if (!farmCreated.success) {
-                return res.status(400).json({ success: farmCreated.success, message: farmCreated.message, data: farmCreated.data });
+                return res.status(400).json({ ...farmCreated });
             }
-            return res.status(200).json({ success: farmCreated.success, message: farmCreated.message, data: farmCreated.data });
+            return res.status(200).json({ ...farmCreated });
 
         } catch (error) {
             throw Error(`An unknown error occurred while adding a farm ${error}`);
@@ -22,7 +22,7 @@ export class FarmController {
         try {
             const farms = await farmClass.getFarms();
 
-            return res.status(200).json({ success: farms.success, message: farms.message, data: farms.data });
+            return res.status(200).json({ ...farms });
         } catch (error) {
             throw Error(`An unknown error occurred while fetching farms ${error}`);
         }
@@ -33,7 +33,7 @@ export class FarmController {
             const id = req.params.id;
             const farms = await farmClass.getFarmById(id);
 
-            return res.status(200).json({ success: farms.success, message: farms.message, data: farms.data });
+            return res.status(200).json({ ...farms });
         } catch (error) {
             throw Error(`An unknown error occurred while fetching farms ${error}`);
         }

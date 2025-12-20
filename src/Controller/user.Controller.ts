@@ -12,8 +12,14 @@ export class UserController {
 
             const userCreated = await userClass.createUser(user);
 
+            if (!userCreated.success) {
+                return res.status(400).json({
+                    ...userCreated
+                })
+            }
+
             return res.status(200).json({
-                message: userCreated.message
+                ...userCreated
             })
         } catch (error) {
             return res.status(500).json({
@@ -24,7 +30,7 @@ export class UserController {
     async fetchUsers(req: Request, res: Response) {
         try {
             const users: IResponseUser = await userClass.fetchUsers();
-            return res.json({ users: users.data }).status(200);
+            return res.json({ ...users }).status(200);
         } catch (error) {
             return res.json({ message: "An unknown error occurred while fetching user" }).status(500);
         }
@@ -33,7 +39,7 @@ export class UserController {
         try {
             const id: string = req.params.id;
             const user: IResponseUser = await userClass.fetchUserById(id);
-            return res.json({ user: user.data }).status(200);
+            return res.json({ ...user }).status(200);
         } catch (error) {
             return res.status(500).json({
                 message: "An unknown error occurred while fetching user by Id"
