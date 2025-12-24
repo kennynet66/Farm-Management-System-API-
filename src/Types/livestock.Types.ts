@@ -22,3 +22,21 @@ export type livestockTypes = {
         }[]
     }[],
 }
+
+export enum gender {
+    male = "male",
+    female = "female"
+}
+
+export enum livestockStatus {
+    active = "active",
+    sold = "sold",
+    dead = "dead",
+    sick = "sick"
+}
+
+export type TBreed = {
+    name: string,
+    description?: string
+    isSystemDefault: boolean
+}

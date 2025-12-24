@@ -1,5 +1,6 @@
+import { Animal } from "../entity/animal.Entity";
+import { AnimalBreed } from "../entity/animalBreed";
 import { animals } from "../Models/animals";
-import { breed } from "../Models/breed";
 import { IResponse } from "../Types/global.Types";
 import { T_Animal } from "../Types/livestock.Types";
 import { iError } from "./error.class";
@@ -7,15 +8,25 @@ import { iError } from "./error.class";
 class Livestock {
     async addLivestock(animal: T_Animal): Promise<IResponse> {
         try {
-            const breedExists = await breed.findById(animal.breedId);
+            const breedExists = await AnimalBreed.findOne({ where: { id: animal.breedId } });
 
             if (!breedExists) {
                 return { success: false, message: `Invalid breed ID: ${animal.breedId}`, data: [] }
             }
 
-            const animalCreated = await animals.create(animal);
+            const newAnimal = Animal.create({
+                tagNumber: animal.tagNumber,
+                sex: animal.sex,
+                birthDate: animal.birthDate,
+                weight: animal.weight,
+                status: animal.status,
+                notes: animal.notes,
+                breed: breedExists
+            });
 
-            return { success: true, message: `${animalCreated.tagNumber} added successfully!`, data: [] }
+            await newAnimal.save();
+
+            return { success: true, message: `${newAnimal.tagNumber} added successfully!`, data: [] }
         } catch (error) {
             const knownError = iError.GetError(error);
             if (knownError.success) {
@@ -27,18 +38,7 @@ class Livestock {
 
     async getLivestock(): Promise<IResponse> {
         try {
-            const livestock = await animals.find().populate({
-                path: "breedId",
-                select: "name description productionType",
-                populate: {
-                    path: "speciesId",
-                    select: "name description",
-                    populate: {
-                        path: "livestockTypeId",
-                        select: "name description"
-                    }
-                }
-            });
+            const livestock = await Animal.find()
 
             return { success: false, message: "Success!", data: livestock };
         } catch (error) {
@@ -52,7 +52,7 @@ class Livestock {
 
     async getLivestockById(id: string): Promise<IResponse> {
         try {
-            const data = await animals.findById(id);
+            const data = await Animal.findOne({ where: { id: id } });
 
             return { success: true, message: "Success!", data: [data] };
         } catch (error) {
