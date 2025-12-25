@@ -3,9 +3,10 @@ export type T_Animal = {
     sex: "male" | "female";
     birthDate: Date;
     weight: number;
-    status: "active" | "sold" | "dead" | "sick",
+    status: livestockStatus,
     notes?: string;
     breedId: string;
+    productionType: string;
 }
 
 export type livestockTypes = {
@@ -36,6 +37,13 @@ export enum livestockStatus {
 }
 
 export type TBreed = {
+    name: string,
+    description?: string
+    animalCategory: string
+    isSystemDefault: boolean
+}
+
+export type TAnimalCategory = {
     name: string,
     description?: string
     isSystemDefault: boolean

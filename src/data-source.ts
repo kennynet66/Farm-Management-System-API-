@@ -6,6 +6,9 @@ import { Permissions } from "./entity/permissions.Entity";
 import { Roles } from "./entity/role.Entity";
 import { Users } from "./entity/user.Entity";
 import { Farms } from "./entity/farm.Entity";
+import { AnimalCategory } from "./entity/animalCategory.Entity";
+import { AnimalBreed } from "./entity/animalBreed";
+import { Animal } from "./entity/animal.Entity";
 
 dotenv.config();
 
@@ -39,7 +42,7 @@ export const PostgresDataSource = new DataSource({
     username: username,
     password: password,
     database: database,
-    entities: [Permissions, Roles, Users, Farms],
+    entities: [Permissions, Roles, Users, Farms, AnimalCategory, AnimalBreed, Animal],
     synchronize: !isProd,
     logging: !isProd,
     ssl: isProd ? {
