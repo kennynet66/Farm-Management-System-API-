@@ -17,6 +17,7 @@ class AnimalRoutes {
     initializeAnimalRoutes() {
         this.router.post("/add-animal", this.middleware.requireFarmManager, this.controller.addAnimal);
         this.router.get("/fetch-animal", this.middleware.requireFarmManager, this.controller.fetchAnimal);
+        this.router.delete("/delete-animals", this.middleware.requireFarmManager, this.controller.deleteAnimals);
     }
 }
 

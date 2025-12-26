@@ -7,12 +7,14 @@ class AnimalClass {
         try {
             const newAnimal = Animal.create({ ...animalDetails });
 
-            newAnimal.save();
+            const animalCreated = await newAnimal.save();
 
-            return { success: true, message: "Unhandled error!", data: [] };
+            if (!animalCreated) return { success: false, message: animalCreated, data: [] };
+
+            return { success: true, message: "Animal added successfully", data: [] };
         } catch (error) {
             console.error(`[Class]: ${error}`);
-            return { success: false, message: "Unhandled error!", data: [] };
+            return { success: false, message: "Unhandled error!", data: [error] };
         }
     };
 
@@ -21,6 +23,18 @@ class AnimalClass {
             const animal = await Animal.find();
 
             return { success: true, message: "Ok!", data: animal };
+        } catch (error) {
+            console.error(`[Class]: ${error}`);
+            return { success: false, message: "Unhandled error!", data: [] };
+        }
+    };
+
+    async deleteAnimals(animals: string[]) {
+        try {
+            console.log(typeof animals);
+            if (animals.length <= 0) return { success: false, message: "Animals cannot be empty", data: [] };
+            await Animal.delete(animals);
+            return { success: true, message: `${animals.length} item(s) deleted successfully`, data: [] };
         } catch (error) {
             console.error(`[Class]: ${error}`);
             return { success: false, message: "Unhandled error!", data: [] };

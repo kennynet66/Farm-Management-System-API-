@@ -28,7 +28,7 @@ export class Animal extends BaseEntity {
     @Column()
     productionType!: string
 
-    @ManyToOne(() => AnimalBreed, { eager: true })
+    @ManyToOne(() => AnimalBreed, { eager: true, nullable: false })
     @JoinColumn()
     breed!: AnimalBreed
 
