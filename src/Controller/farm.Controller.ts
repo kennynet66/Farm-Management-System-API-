@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { T_Farm } from "../Types/farm.Types";
 import { farmClass } from "../Classes/farm.Class";
+import { ExtendedUserRequest, RoleLevels } from "../Types/auth.Types";
 export class FarmController {
     async createFarm(req: Request, res: Response) {
         try {
@@ -18,9 +19,11 @@ export class FarmController {
         }
     }
 
-    async getFarms(req: Request, res: Response) {
+    async getFarms(req: ExtendedUserRequest, res: Response) {
         try {
-            const farms = await farmClass.getFarms();
+            const reqUserRole = req.role as RoleLevels;
+            const reqUserId = req.userId as string;
+            const farms = await farmClass.getFarms(reqUserRole, reqUserId);
 
             return res.status(200).json({ ...farms });
         } catch (error) {
@@ -28,10 +31,12 @@ export class FarmController {
         }
     }
 
-    async getFarmById(req: Request, res: Response) {
+    async getFarmById(req: ExtendedUserRequest, res: Response) {
         try {
-            const id = req.params.id;
-            const farms = await farmClass.getFarmById(id);
+            const farmId = req.params.id;
+            const reqUserRole = req.role as RoleLevels;
+            const reqUserId = req.userId as string;
+            const farms = await farmClass.getFarmById(reqUserRole, farmId, reqUserId);
 
             return res.status(200).json({ ...farms });
         } catch (error) {

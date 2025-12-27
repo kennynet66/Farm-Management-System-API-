@@ -3,6 +3,7 @@ import { Farms } from "../entity/farm.Entity";
 import { Users } from "../entity/user.Entity";
 import { T_Farm } from "../Types/farm.Types";
 import { IResponse } from "../Types/global.Types";
+import { RoleLevels } from "../Types/auth.Types";
 
 class FarmClass {
     async createFarm(newFarmDetails: T_Farm): Promise<IResponse> {
@@ -37,70 +38,97 @@ class FarmClass {
         }
     }
 
-    async getFarms(): Promise<IResponse> {
+    async getFarms(role: string, id: string): Promise<IResponse> {
         try {
-            const farms = await Farms.find({
-                relations: ['manager', 'manager.role'],
-                select: {
-                    id: true,
-                    farmName: true,
-                    county: true,
-                    subCounty: true,
-                    farmSize: true,
-                    yearEstablished: true,
-                    createdAt: true,
-                    updatedAt: true,
-                    manager: {
+            if (role === RoleLevels.ADMIN) {
+                const farms = await Farms.find({
+                    relations: ['manager', 'manager.role'],
+                    select: {
                         id: true,
-                        userName: true,
-                        firstName: true,
-                        lastName: true,
-                        email: true,
-                        role: {
+                        farmName: true,
+                        county: true,
+                        subCounty: true,
+                        farmSize: true,
+                        yearEstablished: true,
+                        createdAt: true,
+                        updatedAt: true,
+                        manager: {
                             id: true,
-                            key: true,
-                            name: true
+                            userName: true,
+                            firstName: true,
+                            lastName: true,
+                            email: true,
+                            role: {
+                                id: true,
+                                key: true,
+                                name: true
+                            }
                         }
                     }
-                }
-            });
+                });
+                return { success: true, message: "success!", data: farms };
+            } else if (role === RoleLevels.FARMMANAGER) {
+                const farmManager = await Users.findOne({ where: { id: id } })
 
-            return { success: true, message: "success!", data: farms };
+                if (!farmManager) return { success: false, message: "Manager not found", data: [] };
+
+                const farms = await Farms.find({ where: { manager: { id: id } } });
+                return { success: true, message: "success!", data: farms };
+            } else {
+                return { success: false, message: "Invalid role!", data: [] };
+
+            }
+
         } catch (error) {
             throw Error(`An unknown error occurred while fetching farms ${error}`);
         }
     }
 
-    async getFarmById(id: string): Promise<IResponse> {
+    async getFarmById(role: string, farmId: string, managerId: string): Promise<IResponse> {
         try {
-            const farm = await Farms.findOne({
-                where: { id: id },
-                relations: ['manager', 'manager.role'],
-                select: {
-                    id: true,
-                    farmName: true,
-                    county: true,
-                    subCounty: true,
-                    farmSize: true,
-                    yearEstablished: true,
-                    createdAt: true,
-                    updatedAt: true,
-                    manager: {
+            if (role === RoleLevels.ADMIN) {
+
+                const farm = await Farms.findOne({
+                    where: { id: farmId },
+                    relations: ['manager', 'manager.role'],
+                    select: {
                         id: true,
-                        userName: true,
-                        firstName: true,
-                        lastName: true,
-                        email: true,
-                        role: {
+                        farmName: true,
+                        county: true,
+                        subCounty: true,
+                        farmSize: true,
+                        yearEstablished: true,
+                        createdAt: true,
+                        updatedAt: true,
+                        manager: {
                             id: true,
-                            key: true,
-                            name: true
+                            userName: true,
+                            firstName: true,
+                            lastName: true,
+                            email: true,
+                            role: {
+                                id: true,
+                                key: true,
+                                name: true
+                            }
                         }
                     }
-                }
-            });
+                });
+                return { success: true, message: "success!", data: [farm] };
+            } else {
+                const farm = await Farms.findOne({ where: { id: farmId, manager: { id: managerId } } });
 
-            return { success: true, message: "success!", data: [farm] };
+                if (!farm) {
+                    return {
+                        success: false,
+                        message: "Farm not found or you don't have permission to view it",
+                        data: []
+                    };
+                }
+
+                return { success: true, message: "success!", data: [farm] };
+            }
+
         } catch (error) {
             throw Error(`An unknown error occurred while fetching farms ${error}`);
         }

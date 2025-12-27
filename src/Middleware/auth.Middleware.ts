@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import jwt, { JsonWebTokenError } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import { AuthValidator } from "../Validators/auth.validator";
+import { ExtendedUserRequest } from "../Types/auth.Types";
 dotenv.config();
 
 const authValidator = new AuthValidator();
@@ -40,7 +41,7 @@ export class AuthMiddleware {
 
     }
 
-    async requireFarmManager(req: Request, res: Response, next: NextFunction) {
+    async requireFarmManager(req: ExtendedUserRequest, res: Response, next: NextFunction) {
         try {
             const authHeader = req.headers['authorization'];
             const token = authHeader && authHeader.split(' ')[1];
@@ -65,6 +66,8 @@ export class AuthMiddleware {
                     // Allow both ADMIN and FARMMANAGER roles
                     const allowedRoles = ["ADMIN", "FARMMANAGER"];
                     if (allowedRoles.includes(decodedToken.role.key)) {
+                        req.userId = decodedToken.id;
+                        req.role = decodedToken.role.key;
                         return next();
                     }
 

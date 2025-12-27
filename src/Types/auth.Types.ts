@@ -1,4 +1,5 @@
 import { IResponse } from "./global.Types"
+import { Request } from "express"
 
 export type LoginDetails = {
     userName: string,
@@ -26,4 +27,9 @@ export type TRole = {
 export enum RoleLevels {
     ADMIN = "ADMIN",
     FARMMANAGER = "FARMMANAGER"
+}
+
+export interface ExtendedUserRequest extends Request {
+    userId?: string,
+    role?: RoleLevels
 }
