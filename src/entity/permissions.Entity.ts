@@ -19,6 +19,9 @@ export class Permissions extends BaseEntity {
     @ManyToMany(() => Roles, (role) => role.permissions)
     roles!: Roles[];
 
+    @Column({ default: false })
+    isSystemDefault!: boolean
+
     @CreateDateColumn()
     createdAt!: Date
 

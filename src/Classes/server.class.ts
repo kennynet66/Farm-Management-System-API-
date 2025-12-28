@@ -7,14 +7,10 @@ import { authRoutes } from "../Routes/auth.Routes";
 import { cropRoutes } from "../Routes/crop.Routes";
 import { inventoryRoutes } from "../Routes/inventory.Route";
 import cors from "cors"
-import { livestockRoutes } from "../Routes/livestock.Routes";
-import { AppDataSource, PostgresDataSource } from "../data-source";
-import { Permissions } from "../entity/permissions.Entity";
-import { Roles } from "../entity/role.Entity";
+import { PostgresDataSource } from "../data-source";
 import { permissionRoutes } from "../Routes/permission.Routes";
 import mongoose, { MongooseError } from "mongoose";
 import { roleRoutes } from "../Routes/role.Routes";
-import { Users } from "../entity/user.Entity";
 import { farmRoutes } from "../Routes/farm.Routes";
 import { utilityRoutes } from "../Routes/utility.Routes";
 import { animalRoutes } from "../Routes/animal.Routes";
@@ -52,11 +48,7 @@ export class Server {
     };
 
     private async initializeDatabase() {
-        if (!AppDataSource.isInitialized) {
-            await AppDataSource.initialize();
-            Permissions.useDataSource(AppDataSource);
-            Roles.useDataSource(AppDataSource);
-            Users.useDataSource(AppDataSource);
+        if (!PostgresDataSource.isInitialized) {
             await PostgresDataSource.initialize();
         }
     }
@@ -68,7 +60,6 @@ export class Server {
         this.server.use("/auth", authRoutes.router);
         this.server.use("/crops", cropRoutes.router);
         this.server.use("/inventory", inventoryRoutes.router);
-        this.server.use("/livestock", livestockRoutes.router);
         this.server.use("/permissions", permissionRoutes.router);
         this.server.use("/roles", roleRoutes.router);
         this.server.use("/farms", farmRoutes.router);

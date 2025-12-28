@@ -1,6 +1,7 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { gender, livestockStatus } from "../Types/livestock.Types";
 import { AnimalBreed } from "./animalBreed";
+import { Farms } from "./farm.Entity";
 
 @Entity()
 export class Animal extends BaseEntity {
@@ -31,6 +32,10 @@ export class Animal extends BaseEntity {
     @ManyToOne(() => AnimalBreed, { eager: true, nullable: false })
     @JoinColumn()
     breed!: AnimalBreed
+
+    @ManyToOne(() => Farms, (farm) => farm.animals, { nullable: false, eager: true })
+    @JoinColumn()
+    farm!: Farms
 
     @CreateDateColumn()
     createdAt!: Date

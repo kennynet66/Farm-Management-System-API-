@@ -1,7 +1,10 @@
 import dotenv from "dotenv";
 import Jwt from "jsonwebtoken";
-import { IResponseLogin, LoginDetails, TRole } from "../Types/auth.Types";
+import { LoginDetails, RoleLevels, TRole } from "../Types/auth.Types";
 import { AuthValidator } from "../Validators/auth.validator";
+import { Roles } from "../entity/role.Entity";
+import { Farms } from "../entity/farm.Entity";
+import { IResponse } from "../Types/global.Types";
 
 dotenv.config();
 const authValidator = new AuthValidator();
@@ -13,30 +16,43 @@ export class Auth {
     constructor() {
         this.ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY || "";
     }
-    createToken(id: string, role: TRole): string {
-        const token = Jwt.sign({ id: id, role: role }, this.ADMIN_SECRET_KEY, { expiresIn: "30d" });
+    createToken(id: string, role: TRole, farm?: string): string {
+        const token = Jwt.sign({ id: id, role: role, farm: farm }, this.ADMIN_SECRET_KEY, { expiresIn: "30d" });
         return token;
     };
 
-    async loginUser(loginDetails: LoginDetails): Promise<IResponseLogin> {
+    async loginUser(loginDetails: LoginDetails): Promise<IResponse> {
         try {
             // check if user exists
             const userExists = await authValidator.UserExistsByUsername(loginDetails.userName);
-            if (!userExists.success || !userExists.id) return { success: false, message: "User does not exist", token: null, data: [] };
+            if (!userExists.success || !userExists.id || !userExists.role) return { success: false, message: "User does not exist", data: [] };
 
             // check if password is valid
             const isValidUserPassword = await authValidator.IsValidUserPassword(loginDetails.password, userExists.id);
 
             if (!isValidUserPassword) {
-                return { success: false, message: "Incorrect password!", token: null, data: [] };
+                return { success: false, message: "Incorrect password!", data: [] };
+            }
+
+            const userRole = await Roles.findOne({ where: { id: userExists.role.id } });
+
+            if (userRole?.key === RoleLevels.FARMMANAGER) {
+                const usersFarms = await Farms.find({ where: { manager: { id: userExists.id } } });
+
+                if (!usersFarms || usersFarms.length <= 0) {
+                    return { success: false, message: "A Farm manager must have atleast one farm!", data: [] };
+                }
+
+                const token = this.createToken(userExists.id, userExists.role, usersFarms[0].id);
+                return { success: true, message: "User logged in successfully!", data: [token] };
             }
 
             const token = this.createToken(userExists.id, userExists.role);
 
-            return { success: true, message: "User logged in successfully!", token: token, data: [] };
+            return { success: true, message: "User logged in successfully!", data: [token] };
         } catch (error) {
             console.log(`An error occurred while logging in the user`, error);
-            return { success: false, message: "User does not exist", token: null, data: [] };
+            return { success: false, message: "User does not exist", data: [] };
         }
     }
 }

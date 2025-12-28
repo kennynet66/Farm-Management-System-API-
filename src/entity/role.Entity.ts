@@ -16,7 +16,7 @@ export class Roles extends BaseEntity {
     @Column()
     description!: string
 
-    @ManyToMany(() => Permissions, (permission) => permission.roles)
+    @ManyToMany(() => Permissions, (permission) => permission.roles, { eager: true })
     @JoinTable()
     permissions!: Permissions[]
 

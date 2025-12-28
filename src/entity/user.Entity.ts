@@ -29,6 +29,9 @@ export class Users extends BaseEntity {
     @OneToMany(() => Farms, (farm) => farm.manager)
     farms!: Farms[]
 
+    @Column({ default: false })
+    isSystemDefault!: boolean;
+
     @CreateDateColumn()
     createdAt!: Date
 

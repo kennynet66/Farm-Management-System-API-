@@ -1,5 +1,6 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { Users } from "./user.Entity";
+import { Animal } from "./animal.Entity";
 
 @Entity()
 export class Farms extends BaseEntity {
@@ -24,6 +25,9 @@ export class Farms extends BaseEntity {
     @ManyToOne(() => Users, (user) => user.farms)
     @JoinColumn()
     manager!: Users
+
+    @OneToMany(() => Animal, (animal) => animal.farm, { nullable: false })
+    animals!: Animal[]
 
     @CreateDateColumn()
     createdAt!: Date
