@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class AddSysDefaultColumn1766905987089 implements MigrationInterface {
+export class AddSysDefaultColumn1766873030729 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE permissions ADD COLUMN isSystemDefault boolean default false`);
