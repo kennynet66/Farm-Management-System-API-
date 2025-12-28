@@ -12,16 +12,13 @@ import { Animal } from "./entity/animal.Entity";
 
 dotenv.config();
 
-const environment: Environments = (process.env.Environment as Environments) || "Development";
-const atlasURL: string = process.env.ATLAS_URL || "";
-const localURL: string = process.env.LOCAL_URL || "";
+const useProduction = process.env.USE_PRODUCTION_DB === 'true';
 
-const host = process.env.DB_HOST;
-const password = process.env.DB_PASSWORD
-const username = process.env.DB_USERNAME;
-const database = process.env.DB_DATABASE
-const port = parseInt(process.env.DB_PORT || "5433");
-const isProd: boolean = process.env.ENVIRONMENT === "Development" ? false : true
+const host = useProduction ? process.env.PROD_DB_HOST : process.env.DB_HOST;
+const port = parseInt(useProduction ? process.env.PROD_DB_PORT! : process.env.DB_PORT!);
+const username = useProduction ? process.env.PROD_DB_USERNAME : process.env.DB_USERNAME;
+const password = useProduction ? process.env.PROD_DB_PASSWORD : process.env.DB_PASSWORD;
+const database = useProduction ? process.env.PROD_DB_DATABASE : process.env.DB_DATABASE;
 
 export const PostgresDataSource = new DataSource({
     type: "postgres",
@@ -31,11 +28,10 @@ export const PostgresDataSource = new DataSource({
     password: password,
     database: database,
     entities: [Permissions, Roles, Users, Farms, AnimalCategory, AnimalBreed, Animal],
-    synchronize: !isProd,
-    logging: !isProd,
-    ssl: isProd ? {
+    synchronize: false,
+    logging: true,
+    ssl: useProduction ? {
         rejectUnauthorized: false
     } : false,
-    migrationsRun: true,
-    migrations: [__dirname + '/migration/**/*{.js,.ts}'],
-})
+    migrations: [__dirname + '/migration/**/*{.js,.ts}']
+});
