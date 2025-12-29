@@ -32,4 +32,5 @@ export enum RoleLevels {
 export interface ExtendedUserRequest extends Request {
     userId?: string,
     role?: RoleLevels
+    farmId?: string
 }

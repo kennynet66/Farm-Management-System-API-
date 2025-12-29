@@ -4,6 +4,7 @@ import { Users } from "../entity/user.Entity";
 import { T_Farm } from "../Types/farm.Types";
 import { IResponse } from "../Types/global.Types";
 import { RoleLevels } from "../Types/auth.Types";
+import { auth, Auth } from "./auth.Class";
 
 class FarmClass {
     async createFarm(newFarmDetails: T_Farm): Promise<IResponse> {
@@ -32,7 +33,9 @@ class FarmClass {
 
             await farm.save();
 
-            return { success: true, message: "Farm added successfully!", data: [] };
+            const token = auth.createToken(manager.id, manager.role, farm.id);
+
+            return { success: true, message: "Farm added successfully!", data: [{ token: token }] };
         } catch (error) {
             throw Error(`An unknown error occurred ${error}`);
         }

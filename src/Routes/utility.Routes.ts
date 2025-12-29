@@ -18,7 +18,7 @@ class UtilityRoutes {
         this.router.post("/add-animal-category", this.middleware.requireAdmin, this.controller.addAnimalCategory);
         this.router.post("/add-animal-breed", this.middleware.requireAdmin, this.controller.addAnimalBreed);
         this.router.get("/fetch-animal-category", this.middleware.requireAdmin, this.controller.fetchAnimalCategory);
-        this.router.get("/fetch-animal-breed", this.middleware.requireAdmin, this.controller.fetchAnimalBreed);
+        this.router.get("/fetch-animal-breed", this.middleware.requireFarmManager, this.controller.fetchAnimalBreed);
     }
 }
 

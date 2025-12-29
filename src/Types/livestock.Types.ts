@@ -7,6 +7,7 @@ export type T_Animal = {
     notes?: string;
     breedId: string;
     productionType: string;
+    farm: string
 }
 
 export type livestockTypes = {

@@ -68,6 +68,7 @@ export class AuthMiddleware {
                     if (allowedRoles.includes(decodedToken.role.key)) {
                         req.userId = decodedToken.id;
                         req.role = decodedToken.role.key;
+                        req.farmId = decodedToken.farm
                         return next();
                     }
 
@@ -83,5 +84,36 @@ export class AuthMiddleware {
             });
         }
     }
+    async requireCreateFarmToken(req: ExtendedUserRequest, res: Response, next: NextFunction) {
+        try {
+            const authHeader = req.headers['authorization'];
+            const token = authHeader && authHeader.split(' ')[1];
 
+            if (!token) {
+                return res.status(401).json({
+                    message: "Create farm token is required"
+                });
+            }
+
+            jwt.verify(token, authValidator.TEMP_SECRET_KEY, async (err, decodedToken: any) => {
+                if (err as JsonWebTokenError) {
+                    return res.status(401).json({
+                        message: err?.message
+                    });
+                } else {
+                    const managerExists = await authValidator.UserExistsById(decodedToken.id);
+                    if (!managerExists) {
+                        return res.status(401).json({ message: "Invalid token" });
+                    }
+
+                    req.userId = decodedToken.userId
+                    next();
+                }
+            });
+        } catch (error) {
+            res.status(500).json({
+                message: `An unknown error occurred in auth middleware: ${error}`
+            });
+        }
+    }
 }

@@ -3,11 +3,11 @@ import { T_Farm } from "../Types/farm.Types";
 import { farmClass } from "../Classes/farm.Class";
 import { ExtendedUserRequest, RoleLevels } from "../Types/auth.Types";
 export class FarmController {
-    async createFarm(req: Request, res: Response) {
+    async createFarm(req: ExtendedUserRequest, res: Response) {
         try {
             const farmDetails: T_Farm = req.body;
 
-            const farmCreated = await farmClass.createFarm(farmDetails);
+            const farmCreated = await farmClass.createFarm({ ...farmDetails, manager: req.userId as string });
 
             if (!farmCreated.success) {
                 return res.status(400).json({ ...farmCreated });

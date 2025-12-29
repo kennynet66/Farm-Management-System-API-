@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
-import { Auth } from "../Classes/auth.Class";
+import { auth } from "../Classes/auth.Class";
 import { LoginDetails } from "../Types/auth.Types";
 import { IUser } from "../Types/user.Types";
 import bcrypt from "bcryptjs";
 import { userClass } from "../Classes/user.Class";
 
-const auth = new Auth();
 export class AuthController {
     async loginUser(req: Request, res: Response) {
         try {

@@ -15,7 +15,7 @@ class FarmRoutes {
     }
 
     initializeFarmRoutes() {
-        this.router.post("/add-farm", this.middleware.requireFarmManager, this.controller.createFarm);
+        this.router.post("/add-farm", this.middleware.requireCreateFarmToken, this.controller.createFarm);
         this.router.get("/get-farms", this.middleware.requireFarmManager, this.controller.getFarms);
         this.router.get("/get-farm/:id", this.middleware.requireFarmManager, this.controller.getFarmById);
     }

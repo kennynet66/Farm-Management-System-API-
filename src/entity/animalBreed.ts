@@ -1,5 +1,6 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { AnimalCategory } from "./animalCategory.Entity";
+import { Animal } from "./animal.Entity";
 
 @Entity()
 export class AnimalBreed extends BaseEntity {
@@ -17,6 +18,9 @@ export class AnimalBreed extends BaseEntity {
 
     @ManyToOne(() => AnimalCategory, { eager: true })
     animalCategory!: AnimalCategory
+
+    @OneToMany(() => Animal, (animal) => animal.breed)
+    animals!: Animal[]
 
     @CreateDateColumn()
     createdAt!: Date

@@ -6,9 +6,12 @@ dotenv.config();
 
 export class AuthValidator {
     ADMIN_SECRET_KEY: string;
+    TEMP_SECRET_KEY: string;
+
 
     constructor() {
         this.ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY || "";
+        this.TEMP_SECRET_KEY = process.env.TEMP_SECRET_KEY || "";
     }
 
     async IsValidUserPassword(password: string, id: string): Promise<boolean> {
@@ -36,7 +39,7 @@ export class AuthValidator {
     }
 
     async UserExistsByUsername(userName: string) {
-        const user = await Users.findOne({ where: { userName: userName } });
+        const user = await Users.findOne({ where: { userName: userName.toLowerCase() } });
         if (!user) {
             return { success: !!user, role: undefined };
         }
