@@ -19,6 +19,21 @@ export class FarmController {
         }
     }
 
+    async updateFarm(req: Request, res: Response) {
+        try {
+            const farmId: string = req.params.id || "";
+            const updatedFarmDetails: Partial<T_Farm> = req.body;
+
+            const updatedFarm = await farmClass.updateFarm(farmId, updatedFarmDetails);
+
+            if (updatedFarm.success) return res.status(400).json({ ...updatedFarm });
+
+            return res.status(200).json({ ...updatedFarm });
+        } catch (error) {
+            throw Error(`An unknown error occurred while updating a farm ${error}`);
+        }
+    }
+
     async getFarms(req: ExtendedUserRequest, res: Response) {
         try {
             const reqUserRole = req.role as RoleLevels;

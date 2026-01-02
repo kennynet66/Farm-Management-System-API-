@@ -41,6 +41,81 @@ class FarmClass {
         }
     }
 
+    async updateFarm(farmId: string, updatedFarmDetails: Partial<T_Farm>): Promise<IResponse> {
+        try {
+            // Fetch the existing farm
+            const farm = await Farms.findOne({
+                where: { id: farmId },
+                relations: ['manager']
+            });
+
+            if (!farm) {
+                return { success: false, message: "Farm not found", data: [] };
+            }
+
+            // Validate only the fields that are being updated
+            if (updatedFarmDetails.county !== undefined && updatedFarmDetails.county.trim() === "") {
+                return { success: false, message: "County cannot be empty", data: [] };
+            }
+
+            if (updatedFarmDetails.subCounty !== undefined && updatedFarmDetails.subCounty.trim() === "") {
+                return { success: false, message: "Sub-county cannot be empty", data: [] };
+            }
+
+            if (updatedFarmDetails.farmName !== undefined && updatedFarmDetails.farmName.trim() === "") {
+                return { success: false, message: "Farm name cannot be empty", data: [] };
+            }
+
+            if (updatedFarmDetails.farmSize !== undefined && updatedFarmDetails.farmSize <= 0) {
+                return { success: false, message: "Farm size must be greater than 0", data: [] };
+            }
+
+            // Handle manager update separately if provided
+            if (updatedFarmDetails.manager !== undefined) {
+                if (updatedFarmDetails.manager === "") {
+                    return { success: false, message: "Manager cannot be empty", data: [] };
+                }
+
+                const newManager = await Users.findOne({
+                    where: { id: updatedFarmDetails.manager }
+                });
+
+                if (!newManager) {
+                    return { success: false, message: "Invalid manager Id!", data: [] };
+                }
+
+                farm.manager = newManager;
+            }
+
+            // Update only the provided fields
+            if (updatedFarmDetails.farmName !== undefined) {
+                farm.farmName = updatedFarmDetails.farmName.trim();
+            }
+
+            if (updatedFarmDetails.county !== undefined) {
+                farm.county = updatedFarmDetails.county.trim();
+            }
+
+            if (updatedFarmDetails.subCounty !== undefined) {
+                farm.subCounty = updatedFarmDetails.subCounty.trim();
+            }
+
+            if (updatedFarmDetails.farmSize !== undefined) {
+                farm.farmSize = updatedFarmDetails.farmSize;
+            }
+
+            if (updatedFarmDetails.yearEstablished !== undefined) {
+                farm.yearEstablished = updatedFarmDetails.yearEstablished;
+            }
+
+            await farm.save();
+
+            return { success: true, message: "Farm updated successfully!", data: [farm] };
+        } catch (error) {
+            throw Error(`An unknown error occurred ${error}`);
+        }
+    }
+
     async getFarms(role: string, id: string): Promise<IResponse> {
         try {
             if (role === RoleLevels.ADMIN) {

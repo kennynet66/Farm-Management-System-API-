@@ -17,6 +17,20 @@ export class AnimalController {
         }
     };
 
+    async updateAnimal(req: Request, res: Response) {
+        try {
+            const animalId: string = req.params.id || "";
+            const animalDetails = req.body;
+
+            const animalUpdated = await animalClass.updateAnimal(animalId, animalDetails);
+
+            if (!animalUpdated.success) return res.status(400).json({ ...animalUpdated });
+
+            return res.status(200).json({ ...animalUpdated });
+        } catch (error) {
+            throw Error(`An unknown error occured while updating an animal ${error}`);
+        }
+    }
     async fetchAnimal(req: ExtendedUserRequest, res: Response) {
         try {
             const animals = await animalClass.fetchAnimals(req.role as string, req.farmId || "");
