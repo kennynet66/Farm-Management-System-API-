@@ -18,6 +18,7 @@ class UserRoutes {
         this.router.post("/create-user", this.middleware.requireAdmin, this.controller.createUser);
         this.router.get("/fetch-users", this.middleware.requireAdmin, this.controller.fetchUsers);
         this.router.get("/fetch-user/:id", this.middleware.requireAdmin, this.controller.fetchUserById);
+        this.router.get("/fetch-user-profile", this.middleware.requireFarmManager, this.controller.fetchUserProfile);
     }
 }
 

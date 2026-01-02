@@ -56,30 +56,41 @@ export class User {
         }
     }
 
-    async getUserWithPermissions(userId: string): Promise<IResponse> {
+    async fetchUserProfile(userId: string): Promise<IResponse> {
         try {
+            if (!userId) return { success: false, message: "Invalid user Id!", data: [] };
+
             const user = await Users.findOne({
                 where: { id: userId },
-                relations: ['role', 'role.permissions']
+                relations: ['role', 'role.permissions'],
+                select: {
+                    id: true,
+                    userName: true,
+                    lastName: true,
+                    firstName: true,
+                    email: true,
+                    createdAt: true,
+                    role: {
+                        id: true,
+                        key: true,
+                        name: true,
+                        permissions: {
+                            id: true,
+                            key: true,
+                            name: true,
+                        }
+                    }
+                }
             });
 
             if (!user) {
                 return { success: false, message: "User not found", data: [] };
             }
 
-            // Access permissions through role
-            const permissions = user.role.permissions;
-
             return {
                 success: true,
                 message: "Ok",
-                data: [{
-                    id: user.id,
-                    userName: user.userName,
-                    email: user.email,
-                    role: user.role,
-                    permissions: permissions
-                }]
+                data: [user]
             };
         } catch (error) {
             throw new Error(`Failed to fetch user: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -88,6 +99,7 @@ export class User {
     async fetchUsers(): Promise<IResponseUser> {
         try {
             const users = await Users.find({
+                relations: ['role', 'role.permissions'],
                 select: {
                     id: true,
                     userName: true,
@@ -95,8 +107,11 @@ export class User {
                     firstName: true,
                     email: true,
                     createdAt: true,
-                    updatedAt: true,
-                    role: true
+                    role: {
+                        id: true,
+                        key: true,
+                        name: true,
+                    }
                 }
             });
             return { success: true, message: "Users found!", data: users };
@@ -112,15 +127,24 @@ export class User {
     async fetchUserById(id: string): Promise<IResponseUser> {
         try {
             const user = await Users.find({
-                where: { id: id }, select: {
+                where: { id: id }, relations: ['role', 'role.permissions'],
+                select: {
                     id: true,
                     userName: true,
                     lastName: true,
                     firstName: true,
                     email: true,
                     createdAt: true,
-                    updatedAt: true,
-                    role: true
+                    role: {
+                        id: true,
+                        key: true,
+                        name: true,
+                        permissions: {
+                            id: true,
+                            key: true,
+                            name: true,
+                        }
+                    }
                 }
             });
 

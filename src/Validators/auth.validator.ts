@@ -39,7 +39,7 @@ export class AuthValidator {
     }
 
     async UserExistsByUsername(userName: string) {
-        const user = await Users.findOne({ where: { userName: userName.toLowerCase() } });
+        const user = await Users.findOne({ where: { userName: userName.toLowerCase() }, relations: ['role', 'role.permissions'] });
         if (!user) {
             return { success: !!user, role: undefined };
         }

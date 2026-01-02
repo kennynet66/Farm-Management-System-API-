@@ -22,7 +22,7 @@ export class Users extends BaseEntity {
     @Column()
     password!: string
 
-    @ManyToOne(() => Roles, { eager: true })
+    @ManyToOne(() => Roles)
     @JoinColumn()
     role!: Roles;
 

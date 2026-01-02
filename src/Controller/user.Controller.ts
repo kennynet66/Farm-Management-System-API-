@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { userClass } from "../Classes/user.Class";
 import { IResponseUser, IUser } from "../Types/user.Types";
 import bcrypt from "bcryptjs";
+import { ExtendedUserRequest } from "../Types/auth.Types";
 
 export class UserController {
     async createUser(req: Request, res: Response) {
@@ -43,6 +44,17 @@ export class UserController {
         } catch (error) {
             return res.status(500).json({
                 message: "An unknown error occurred while fetching user by Id"
+            });
+        }
+    };
+    async fetchUserProfile(req: ExtendedUserRequest, res: Response) {
+        try {
+            const id: string = req.userId || "";
+            const user: IResponseUser = await userClass.fetchUserProfile(id);
+            return res.json({ ...user }).status(200);
+        } catch (error) {
+            return res.status(500).json({
+                message: "An unknown error occurred while fetching user profile"
             });
         }
     };
