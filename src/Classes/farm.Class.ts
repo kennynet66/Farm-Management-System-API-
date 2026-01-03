@@ -211,6 +211,56 @@ class FarmClass {
             throw Error(`An unknown error occurred while fetching farms ${error}`);
         }
     }
+
+    async getFarmProfile(role: string, farmId: string, managerId: string): Promise<IResponse> {
+        try {
+            if (role === RoleLevels.ADMIN) {
+
+                const farm = await Farms.findOne({
+                    where: { id: farmId },
+                    relations: ['manager', 'manager.role'],
+                    select: {
+                        id: true,
+                        farmName: true,
+                        county: true,
+                        subCounty: true,
+                        farmSize: true,
+                        yearEstablished: true,
+                        createdAt: true,
+                        updatedAt: true,
+                        manager: {
+                            id: true,
+                            userName: true,
+                            firstName: true,
+                            lastName: true,
+                            email: true,
+                            role: {
+                                id: true,
+                                key: true,
+                                name: true
+                            }
+                        }
+                    }
+                });
+                return { success: true, message: "success!", data: [farm] };
+            } else {
+                const farm = await Farms.findOne({ where: { id: farmId, manager: { id: managerId } } });
+
+                if (!farm) {
+                    return {
+                        success: false,
+                        message: "Farm not found or you don't have permission to view it",
+                        data: []
+                    };
+                }
+
+                return { success: true, message: "success!", data: [farm] };
+            }
+
+        } catch (error) {
+            throw Error(`An unknown error occurred while fetching farms ${error}`);
+        }
+    }
 }
 
 export const farmClass = new FarmClass();
