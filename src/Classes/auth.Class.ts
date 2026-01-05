@@ -42,22 +42,14 @@ export class Auth {
                 return { success: false, message: "Incorrect password!", data: [] };
             }
 
-            const userRole = await Roles.findOne({ where: { id: userExists.role.id } });
+            const usersFarms = await Farms.find({ where: { manager: { id: userExists.id } } });
 
-            if (userRole?.key === RoleLevels.FARMMANAGER) {
-                const usersFarms = await Farms.find({ where: { manager: { id: userExists.id } } });
-
-                if (!usersFarms || usersFarms.length <= 0) {
-                    const token = this.createTempToken(userExists.id);
-                    return { success: true, message: "User logged in successfully!", data: [{ CreateFarmToken: token, token: null }] };
-                }
-
-                const token = this.createToken(userExists.id, userExists.role, usersFarms[0].id);
-                return { success: true, message: "User logged in successfully!", data: [{ token: token, CreateFarmToken: null }] };
+            if (!usersFarms || usersFarms.length <= 0) {
+                const token = this.createTempToken(userExists.id);
+                return { success: true, message: "User logged in successfully!", data: [{ CreateFarmToken: token, token: null }] };
             }
 
-            const token = this.createToken(userExists.id, userExists.role);
-
+            const token = this.createToken(userExists.id, userExists.role, usersFarms[0].id);
             return { success: true, message: "User logged in successfully!", data: [{ token: token, CreateFarmToken: null }] };
         } catch (error) {
             console.log(`An error occurred while logging in the user`, error);

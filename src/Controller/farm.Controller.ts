@@ -64,7 +64,7 @@ export class FarmController {
             const farmId = req.farmId || "";
             const reqUserRole = req.role as RoleLevels;
             const reqUserId = req.userId as string;
-            const farms = await farmClass.getFarmById(reqUserRole, farmId, reqUserId);
+            const farms = await farmClass.getFarmProfile(reqUserRole, farmId, reqUserId);
 
             return res.status(200).json({ ...farms });
         } catch (error) {

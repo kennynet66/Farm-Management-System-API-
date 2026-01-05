@@ -34,4 +34,7 @@ export class Farms extends BaseEntity {
 
     @UpdateDateColumn()
     updatedAt!: Date
+
+    @Column({ default: false })
+    isSystemDefault!: boolean
 }

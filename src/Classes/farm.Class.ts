@@ -120,7 +120,7 @@ class FarmClass {
         try {
             if (role === RoleLevels.ADMIN) {
                 const farms = await Farms.find({
-                    relations: ['manager', 'manager.role'],
+                    relations: ['manager'],
                     select: {
                         id: true,
                         farmName: true,
@@ -131,16 +131,7 @@ class FarmClass {
                         createdAt: true,
                         updatedAt: true,
                         manager: {
-                            id: true,
-                            userName: true,
-                            firstName: true,
-                            lastName: true,
-                            email: true,
-                            role: {
-                                id: true,
-                                key: true,
-                                name: true
-                            }
+                            userName: true
                         }
                     }
                 });
@@ -168,7 +159,7 @@ class FarmClass {
 
                 const farm = await Farms.findOne({
                     where: { id: farmId },
-                    relations: ['manager', 'manager.role'],
+                    relations: ['manager'],
                     select: {
                         id: true,
                         farmName: true,
@@ -179,16 +170,7 @@ class FarmClass {
                         createdAt: true,
                         updatedAt: true,
                         manager: {
-                            id: true,
-                            userName: true,
-                            firstName: true,
-                            lastName: true,
-                            email: true,
-                            role: {
-                                id: true,
-                                key: true,
-                                name: true
-                            }
+                            userName: true
                         }
                     }
                 });
@@ -218,7 +200,6 @@ class FarmClass {
 
                 const farm = await Farms.findOne({
                     where: { id: farmId },
-                    relations: ['manager', 'manager.role'],
                     select: {
                         id: true,
                         farmName: true,
@@ -228,18 +209,7 @@ class FarmClass {
                         yearEstablished: true,
                         createdAt: true,
                         updatedAt: true,
-                        manager: {
-                            id: true,
-                            userName: true,
-                            firstName: true,
-                            lastName: true,
-                            email: true,
-                            role: {
-                                id: true,
-                                key: true,
-                                name: true
-                            }
-                        }
+                        isSystemDefault: true
                     }
                 });
                 return { success: true, message: "success!", data: [farm] };
