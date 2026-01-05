@@ -33,5 +33,6 @@ export const PostgresDataSource = new DataSource({
     ssl: useProduction ? {
         rejectUnauthorized: false
     } : false,
+    migrationsRun: true,
     migrations: [__dirname + '/migration/**/*{.js,.ts}']
 });
