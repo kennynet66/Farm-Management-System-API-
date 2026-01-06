@@ -10,6 +10,10 @@ export class AuthController {
         try {
             const loginDetails: LoginDetails = req.body;
             const loginUser = await auth.loginUser(loginDetails);
+
+            if (!loginUser.success) {
+                return res.status(400).json({ ...loginUser });
+            }
             return res.status(200).json({ ...loginUser });
         } catch (error) {
             res.status(500).json({
