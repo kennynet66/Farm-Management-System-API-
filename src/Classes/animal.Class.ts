@@ -114,7 +114,26 @@ class AnimalClass {
     async fetchAnimals(role: string, farmId: string): Promise<IResponse> {
         try {
             if (role === RoleLevels.ADMIN) {
-                const animal = await Animal.find();
+                const animal = await Animal.find({
+                    relations: ['farm'],
+                    select: {
+                        id: true,
+                        tagNumber: true,
+                        sex: true,
+                        birthDate: true,
+                        weight: true,
+                        status: true,
+                        notes: true,
+                        productionType: true,
+                        breed: true,
+                        farm: {
+                            id: true,
+                            farmName: true
+                        },
+                        createdAt: true,
+                        updatedAt: true
+                    }
+                });
 
                 return { success: true, message: "Ok!", data: animal };
             } else if (role === RoleLevels.FARMMANAGER) {
@@ -122,7 +141,27 @@ class AnimalClass {
 
                 if (!farm) return { success: false, message: "Invalid farm id", data: [] };
 
-                const animals = await Animal.findBy({ farm: { id: farmId } });
+                const animals = await Animal.find({
+                    where: { farm: { id: farmId }, },
+                    relations: ['farm'],
+                    select: {
+                        id: true,
+                        tagNumber: true,
+                        sex: true,
+                        birthDate: true,
+                        weight: true,
+                        status: true,
+                        notes: true,
+                        productionType: true,
+                        breed: true,
+                        farm: {
+                            id: true,
+                            farmName: true
+                        },
+                        createdAt: true,
+                        updatedAt: true
+                    }
+                });
                 return { success: true, message: "Ok!", data: animals };
             } else {
                 return { success: false, message: "Invalid role!", data: [] };
